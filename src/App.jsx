@@ -30,7 +30,7 @@ const MODE_COPY = {
 
 const NAV_ITEMS = [
   { id: "overview", label: "Platform" },
-  { id: "problem", label: "Problem" },
+  { id: "problem", label: "Challenges" },
   { id: "process", label: "Workflow" },
   { id: "simulator", label: "Workspace" },
   { id: "audit", label: "Governance" },
@@ -85,6 +85,33 @@ const ENTERPRISE_AUDIENCES = [
     label: "Service delivery",
     text: "반복 가능한 triage workflow를 여러 고객사나 내부 사업부에 동일한 방식으로 제공할 수 있습니다.",
   },
+];
+
+const TRUST_BAND = ["Telecom", "Financial Services", "Enterprise IT", "MSSP", "E-commerce", "Public Sector"];
+
+const PLATFORM_MODULES = [
+  {
+    title: "Unified Intake",
+    text: "Alert, enrichment, and missing-data review를 하나의 case surface로 통합합니다.",
+  },
+  {
+    title: "Decision Intelligence",
+    text: "LLM summary와 rule-based scoring을 결합해 analyst judgement를 보강합니다.",
+  },
+  {
+    title: "Approval Workflow",
+    text: "Escalation 전 manager review를 명시적으로 남겨 enterprise control을 유지합니다.",
+  },
+  {
+    title: "Audit-Ready Output",
+    text: "Structured JSON, queue outcome, timestamps, sheets logging으로 governance evidence를 축적합니다.",
+  },
+];
+
+const ENTERPRISE_OUTCOMES = [
+  { label: "Time to Triage", value: "Down", note: "manual review overhead reduced through standardized intake" },
+  { label: "Decision Consistency", value: "Up", note: "shared scoring logic and approval gates across teams" },
+  { label: "Audit Readiness", value: "Built-in", note: "structured rationale and log surfaces from day one" },
 ];
 
 const PROCESS_LANES = [
@@ -260,11 +287,11 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
   return (
     <div
       style={{
-        background: "linear-gradient(180deg, rgba(12,19,34,0.92), rgba(6,10,18,0.88))",
+        background: "linear-gradient(180deg, rgba(15,21,33,0.94), rgba(10,14,24,0.92))",
         border: `1px solid ${accent}`,
         borderRadius: "22px",
         padding: "20px",
-        boxShadow: "0 24px 54px rgba(0,0,0,0.22)",
+        boxShadow: "0 24px 54px rgba(0,0,0,0.18)",
         backdropFilter: "blur(18px)",
       }}
     >
@@ -288,6 +315,101 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
   );
 }
 
+function TrustBand() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "10px",
+        marginTop: "18px",
+        padding: "14px 16px",
+        borderRadius: "18px",
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.06)",
+      }}
+    >
+      <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase" }}>Designed for teams in</span>
+      {TRUST_BAND.map((item) => (
+        <span
+          key={item}
+          style={{
+            padding: "8px 12px",
+            borderRadius: "999px",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.78)",
+            fontSize: "12px",
+            fontWeight: 600,
+          }}
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function HeroProductPreview({ mode, status, lastRunMeta }) {
+  return (
+    <div
+      style={{
+        borderRadius: "24px",
+        padding: "20px",
+        background: "linear-gradient(180deg, rgba(15,20,32,0.98), rgba(10,13,22,0.96))",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 30px 60px rgba(0,0,0,0.22)",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+        <div>
+          <div style={{ color: "rgba(255,255,255,0.42)", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase" }}>Product Workspace</div>
+          <div style={{ marginTop: "6px", color: "#f7f8fd", fontSize: "22px", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif" }}>Enterprise case orchestration</div>
+        </div>
+        <div style={{ padding: "7px 12px", borderRadius: "999px", background: "rgba(142,167,255,0.12)", border: "1px solid rgba(142,167,255,0.24)", color: "#e3e9ff", fontSize: "11px", fontWeight: 700 }}>
+          {MODE_COPY[mode].label}
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.15fr 0.85fr", gap: "12px", marginTop: "18px" }}>
+        <div
+          style={{
+            borderRadius: "18px",
+            padding: "16px",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          <div style={{ color: "rgba(255,255,255,0.42)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.8px" }}>Control signals</div>
+          <div style={{ marginTop: "12px", display: "grid", gap: "10px" }}>
+            {["Unified intake", "Approval workflow", "Audit-ready evidence"].map((item) => (
+              <div
+                key={item}
+                style={{
+                  borderRadius: "14px",
+                  padding: "12px 14px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                  color: "rgba(255,255,255,0.82)",
+                  fontSize: "13px",
+                }}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gap: "10px" }}>
+          <MetricCard label="Workspace Status" value={status === "done" ? "Operational" : status === "running" ? "Processing case" : "Ready for review"} accent="rgba(142,167,255,0.22)" />
+          <MetricCard label="Last Case" value={lastRunMeta?.seed || "Awaiting first run"} accent="rgba(255,255,255,0.08)" />
+          <MetricCard label="Primary Buyer" value="Security Ops + GRC" accent="rgba(212,176,111,0.2)" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MetricCard({ label, value, accent }) {
   return (
     <div
@@ -299,7 +421,7 @@ function MetricCard({ label, value, accent }) {
       }}
     >
       <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.36)", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "6px" }}>{label}</div>
-      <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.88)", fontWeight: 600, lineHeight: 1.5 }}>{value}</div>
+      <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.88)", fontWeight: 600, lineHeight: 1.55, whiteSpace: "pre-line" }}>{value}</div>
     </div>
   );
 }
@@ -400,6 +522,21 @@ function TopNav({ mode, status }) {
               </a>
             ))}
           </div>
+          <a
+            href="#simulator"
+            style={{
+              textDecoration: "none",
+              fontSize: "12px",
+              padding: "10px 14px",
+              borderRadius: "999px",
+              border: "1px solid rgba(142,167,255,0.2)",
+              background: "linear-gradient(135deg, rgba(142,167,255,0.16), rgba(212,176,111,0.08))",
+              color: "#f4f6ff",
+              fontWeight: 700,
+            }}
+          >
+            Book a walkthrough
+          </a>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "999px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
             <StatusDot status={status} />
             <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)" }}>{MODE_COPY[mode].label}</span>
@@ -445,12 +582,12 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               maxWidth: "760px",
             }}
           >
-            Security triage workflow for SOC, compliance, and IT leadership teams.
+            Enterprise security teams need workflow UX, not just another dashboard.
           </h1>
 
           <p style={{ margin: "18px 0 0", maxWidth: "720px", color: "rgba(229,237,247,0.74)", fontSize: "16px", lineHeight: 1.9 }}>
-            ThreatWatch AI는 단순 데모 대시보드가 아니라, 기업 보안팀이 실제로 구매 검토할 수 있는 workflow-oriented UI를 목표로 합니다. 사용자는 case를 실행하고,
-            시스템은 enrichment, LLM summary, validation, scoring, approval, audit trail까지 enterprise operating model 관점에서 보여줍니다.
+            ThreatWatch AI는 실제 B2B security platform 사이트처럼, buyer가 처음 보는 순간 product category와 operational value를 이해할 수 있게 설계되어야 합니다.
+            그래서 이 화면은 product narrative, proof points, workflow modules, 그리고 embedded workspace를 하나의 enterprise UX로 묶습니다.
           </p>
 
           <div style={{ display: "flex", gap: "12px", marginTop: "22px", flexWrap: "wrap" }}>
@@ -467,7 +604,7 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
                 fontWeight: 700,
               }}
             >
-              Open Buyer Workspace
+              Book a Walkthrough
             </a>
             <a
               href="#process"
@@ -482,7 +619,7 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
                 fontWeight: 700,
               }}
             >
-              Review Operating Model
+              See Platform Workflow
             </a>
           </div>
 
@@ -491,31 +628,11 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               <MetricCard key={item.label} label={item.label} value={`${item.value}\n${item.note}`} accent="rgba(255,255,255,0.08)" />
             ))}
           </div>
+
+          <TrustBand />
         </SectionPanel>
 
-        <SectionPanel title="Enterprise Snapshot" subtitle="B2B buyer가 바로 이해할 수 있는 buying signals를 한눈에 정리합니다." accent="rgba(212,176,111,0.18)">
-          <div style={{ display: "grid", gap: "12px" }}>
-            <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(142,167,255,0.18)" />
-            <MetricCard label="Status" value={status === "running" ? `Running ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? "Ready with latest result" : "Waiting for next run"} accent="rgba(255,255,255,0.08)" />
-            <MetricCard label="Incident Library" value={`${scenariosCount || 0} curated enterprise cases`} accent="rgba(255,255,255,0.08)" />
-            <MetricCard label="Last Seed" value={lastRunMeta?.seed || "No run yet"} accent="rgba(255,255,255,0.08)" />
-          </div>
-
-          <div
-            style={{
-              marginTop: "16px",
-              padding: "14px",
-              borderRadius: "16px",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.06)",
-            }}
-          >
-            <div style={{ color: "#f8fbff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", marginBottom: "8px" }}>Platform Positioning</div>
-            <div style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.8 }}>
-              This is not a hacking tool. It is a workflow intelligence layer for regulated organizations that need faster triage, auditable routing, and clearer approval boundaries.
-            </div>
-          </div>
-        </SectionPanel>
+        <HeroProductPreview mode={mode} status={status} lastRunMeta={lastRunMeta} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginTop: "14px" }}>
@@ -524,6 +641,53 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
             <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8 }}>{item.text}</div>
           </SectionPanel>
         ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.05fr) minmax(320px, 0.95fr)", gap: "14px", marginTop: "14px" }}>
+        <SectionPanel title="Platform Capabilities" subtitle="실제 B2B SaaS 사이트처럼 핵심 capability를 빠르게 스캔할 수 있게 구성합니다." accent="rgba(142,167,255,0.16)">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
+            {PLATFORM_MODULES.map((item) => (
+              <div
+                key={item.title}
+                style={{
+                  borderRadius: "16px",
+                  padding: "16px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                <div style={{ color: "#f7f8fd", fontSize: "15px", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{item.title}</div>
+                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.7 }}>{item.text}</div>
+              </div>
+            ))}
+          </div>
+        </SectionPanel>
+
+        <SectionPanel title="Outcomes Buyers Care About" subtitle="실제 제품 페이지처럼 운영 성과와 governance 가치를 함께 보여줍니다." accent="rgba(212,176,111,0.16)">
+          <div style={{ display: "grid", gap: "10px" }}>
+            {ENTERPRISE_OUTCOMES.map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  borderRadius: "16px",
+                  padding: "16px",
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.8px" }}>{item.label}</div>
+                  <div style={{ color: "#f0d39b", fontSize: "16px", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif" }}>{item.value}</div>
+                </div>
+                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.7 }}>{item.note}</div>
+              </div>
+            ))}
+            <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.56)", fontSize: "12px", lineHeight: 1.8 }}>
+              Current workspace status: {status === "running" ? `processing for ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? "latest case available" : "ready for review"} · Incident library:{" "}
+              {scenariosCount || 0} curated cases
+            </div>
+          </div>
+        </SectionPanel>
       </div>
     </section>
   );
@@ -1654,11 +1818,11 @@ export default function ThreatWatchDashboard() {
         background:
           "radial-gradient(circle at top left, rgba(142,167,255,0.14), transparent 24%), radial-gradient(circle at top right, rgba(212,176,111,0.08), transparent 28%), linear-gradient(180deg, #081019 0%, #0b1320 45%, #081019 100%)",
         color: "#e2e8f0",
-        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        fontFamily: "'Manrope', sans-serif",
       }}
     >
       <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap"
         rel="stylesheet"
       />
 
