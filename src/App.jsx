@@ -19,29 +19,29 @@ const STORAGE_KEYS = {
 
 const MODE_COPY = {
   demo: {
-    label: "Demo Mode",
-    subtitle: "Seed 기반으로 언제든 같은 시나리오를 재현할 수 있는 발표용 모드",
+    label: "Sandbox Mode",
+    subtitle: "사전 정의된 incidents로 buyer demo와 운영 walkthrough를 안정적으로 재현하는 모드",
   },
   live: {
-    label: "Live Mode",
-    subtitle: "n8n Webhook을 호출하는 운영형 모드. 실패하면 같은 시나리오의 fallback 결과로 전환",
+    label: "Connected Mode",
+    subtitle: "n8n Webhook을 호출하는 pilot 연동 모드. 실패하면 같은 시나리오의 fallback 결과로 전환",
   },
 };
 
 const NAV_ITEMS = [
-  { id: "overview", label: "Overview" },
+  { id: "overview", label: "Platform" },
   { id: "problem", label: "Problem" },
-  { id: "process", label: "Process" },
-  { id: "simulator", label: "Simulator" },
-  { id: "audit", label: "Audit" },
-  { id: "strategy", label: "Strategy" },
+  { id: "process", label: "Workflow" },
+  { id: "simulator", label: "Workspace" },
+  { id: "audit", label: "Governance" },
+  { id: "strategy", label: "Business Value" },
 ];
 
 const HERO_METRICS = [
-  { label: "Alert Volume", value: "40-70/day", note: "manual triage baseline from assignment docs" },
-  { label: "Triage SLA", value: "30 min", note: "time-sensitive screening window" },
-  { label: "Human Boundary", value: "HITL", note: "manager approval remains required" },
-  { label: "Audit Output", value: "JSON + Sheets", note: "structured triage and reporting" },
+  { label: "Operational Fit", value: "SOC + GRC", note: "triage, approval, and audit in one surface" },
+  { label: "Response Window", value: "30 min SLA", note: "time-sensitive screening for regulated teams" },
+  { label: "Decision Control", value: "HITL", note: "manager approval remains the escalation boundary" },
+  { label: "Deployment Path", value: "Sandbox to Pilot", note: "presentation mode today, connected workflow tomorrow" },
 ];
 
 const AS_IS_ISSUES = [
@@ -59,9 +59,32 @@ const RED_BOX_SCOPE = [
 ];
 
 const TO_BE_PROMISES = [
-  "규칙 기반 점수와 LLM 요약을 결합해 triage 속도와 일관성을 높입니다.",
-  "고위험은 HITL 승인으로 보내고, 저위험은 monitoring queue 또는 close로 라우팅합니다.",
-  "모든 결과를 structured JSON과 로그로 남겨 발표 후에도 운영형 사이트로 연결할 수 있습니다.",
+  "규칙 기반 점수와 LLM 요약을 결합해 analyst productivity와 triage consistency를 동시에 높입니다.",
+  "고위험은 HITL 승인으로 보내고, 저위험은 monitoring queue 또는 close로 라우팅해 governance를 유지합니다.",
+  "모든 결과를 structured JSON과 audit log로 남겨 POC 이후 pilot 환경으로도 자연스럽게 이어집니다.",
+];
+
+const ENTERPRISE_AUDIENCES = [
+  {
+    title: "SOC Operations",
+    label: "Frontline teams",
+    text: "Alert triage, enrichment, case routing, and low-risk queue handling을 표준화합니다.",
+  },
+  {
+    title: "Security Leadership",
+    label: "Approval owners",
+    text: "Escalation approval, SLA visibility, and analyst decision quality를 한 화면에서 확인합니다.",
+  },
+  {
+    title: "Compliance and Audit",
+    label: "Governance teams",
+    text: "Structured JSON, decision rationale, and monitoring logs로 감사 대응 품질을 높입니다.",
+  },
+  {
+    title: "MSSP / Enterprise IT",
+    label: "Service delivery",
+    text: "반복 가능한 triage workflow를 여러 고객사나 내부 사업부에 동일한 방식으로 제공할 수 있습니다.",
+  },
 ];
 
 const PROCESS_LANES = [
@@ -168,24 +191,24 @@ const AUDIT_PILLARS = [
 
 const STRATEGY_PILLARS = [
   {
-    title: "Trust as the Product",
-    text: "문서 전체의 메시지는 일관됩니다. 진짜 차별화 포인트는 AI 자체보다 빠르고 설명 가능한 운영 품질입니다.",
+    title: "Workflow Intelligence, Not Another Dashboard",
+    text: "구매자 입장에서는 새로운 화면 하나보다, 기존 보안 운영을 더 빠르고 일관되게 만드는 workflow layer가 더 설득력 있습니다.",
   },
   {
     title: "Operational Excellence",
-    text: "ThreatWatch AI는 incident response 전체가 아니라 triage bottleneck을 줄여 SLA와 analyst workload를 개선하는 데 초점을 둡니다.",
+    text: "ThreatWatch AI는 incident response 전체가 아니라 triage bottleneck을 줄여 SLA, analyst workload, escalation quality를 개선하는 데 초점을 둡니다.",
   },
   {
     title: "Governance by Design",
-    text: "audit trail, HITL, structured outputs가 들어가야 통신·보안 규제 환경에서도 신뢰할 수 있는 시스템처럼 보입니다.",
+    text: "audit trail, HITL, structured outputs가 있어야 통신·금융·대형 플랫폼 같은 규제 환경에서도 procurement-ready한 솔루션처럼 보입니다.",
   },
 ];
 
 const PRESENTATION_FLOW = [
-  "As-Is BPMN의 red box를 먼저 보여주고, 병목이 어디인지 15초 안에 설명합니다.",
-  "To-Be BPMN에서 자동화 범위와 HITL 경계를 짚으면서 전체 흐름을 보여줍니다.",
-  "Random Scenario를 실행해 P1/P2/P3 또는 retry/escalation 시나리오를 실제로 재생합니다.",
-  "마지막으로 structured JSON과 audit log를 보여주며 웹사이트가 발표용을 넘어 운영형 설계임을 강조합니다.",
+  "먼저 manual triage가 왜 운영 리스크와 감사 리스크를 동시에 만드는지 business pain부터 설명합니다.",
+  "다음으로 To-Be BPMN에서 automation scope와 HITL boundary를 보여주며 enterprise workflow로 연결합니다.",
+  "Workspace에서 portfolio-style incident를 실행해 P1/P2/P3 또는 retry/escalation case를 재생합니다.",
+  "마지막으로 structured JSON, approval boundary, audit log를 보여주며 pilot-ready product라는 점을 강조합니다.",
 ];
 
 function readStoredValue(key, fallback) {
@@ -283,7 +306,7 @@ function MetricCard({ label, value, accent }) {
 
 function StatusDot({ status }) {
   const color =
-    status === "running" ? "#00e5ff" : status === "done" ? "#76ff03" : status === "error" ? "#ff1744" : "rgba(255,255,255,0.3)";
+    status === "running" ? "#8ea7ff" : status === "done" ? "#6dbb9b" : status === "error" ? "#e27f77" : "rgba(255,255,255,0.3)";
 
   return (
     <div
@@ -292,7 +315,7 @@ function StatusDot({ status }) {
         height: "10px",
         borderRadius: "999px",
         background: color,
-        boxShadow: status === "running" ? "0 0 14px rgba(0,229,255,0.45)" : "none",
+        boxShadow: status === "running" ? "0 0 14px rgba(142,167,255,0.45)" : "none",
       }}
     />
   );
@@ -328,7 +351,7 @@ function TopNav({ mode, status }) {
         top: 0,
         zIndex: 20,
         backdropFilter: "blur(18px)",
-        background: "rgba(5, 9, 19, 0.76)",
+        background: "rgba(10, 14, 24, 0.84)",
         borderBottom: "1px solid rgba(255,255,255,0.06)",
       }}
     >
@@ -339,11 +362,11 @@ function TopNav({ mode, status }) {
               width: "40px",
               height: "40px",
               borderRadius: "14px",
-              background: "linear-gradient(135deg, #00e5ff, #76ff03)",
+              background: "linear-gradient(135deg, #8ea7ff, #d4b06f)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#06111a",
+              color: "#101725",
               fontWeight: 900,
               fontSize: "18px",
               fontFamily: "'Space Grotesk', sans-serif",
@@ -353,7 +376,7 @@ function TopNav({ mode, status }) {
           </div>
           <div>
             <div style={{ color: "#f8fbff", fontWeight: 800, fontSize: "14px", fontFamily: "'Space Grotesk', sans-serif" }}>ThreatWatch AI</div>
-            <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px" }}>Interactive BPMN-driven SOC triage website</div>
+            <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px" }}>Enterprise security workflow intelligence</div>
           </div>
         </div>
 
@@ -391,16 +414,16 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
   return (
     <section id="overview" style={{ paddingTop: "40px" }}>
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(320px, 0.8fr)", gap: "18px", alignItems: "stretch" }}>
-        <SectionPanel accent="rgba(0,229,255,0.2)">
+        <SectionPanel accent="rgba(142,167,255,0.22)">
           <div
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
               borderRadius: "999px",
-              border: "1px solid rgba(133, 197, 255, 0.25)",
-              background: "rgba(133, 197, 255, 0.08)",
-              color: "#9ed1ff",
+              border: "1px solid rgba(212,176,111,0.25)",
+              background: "rgba(212,176,111,0.08)",
+              color: "#e9cc95",
               padding: "7px 12px",
               fontSize: "11px",
               letterSpacing: "0.9px",
@@ -408,7 +431,7 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               fontWeight: 700,
             }}
           >
-            PPT-aligned security triage simulator
+            Enterprise-ready triage orchestration
           </div>
 
           <h1
@@ -422,12 +445,12 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               maxWidth: "760px",
             }}
           >
-            Explainable SOC triage that turns BPMN into a live website experience.
+            Security triage workflow for SOC, compliance, and IT leadership teams.
           </h1>
 
           <p style={{ margin: "18px 0 0", maxWidth: "720px", color: "rgba(229,237,247,0.74)", fontSize: "16px", lineHeight: 1.9 }}>
-            ThreatWatch AI는 n8n 노드를 전면에 내세우는 대신, 발표 자료의 BPMN 흐름을 그대로 살아 움직이게 만든 웹사이트입니다. 사용자는 랜덤 시나리오를 실행하고,
-            시스템은 enrichment, LLM summary, validation, scoring, approval, audit trail까지 한 번에 보여줍니다.
+            ThreatWatch AI는 단순 데모 대시보드가 아니라, 기업 보안팀이 실제로 구매 검토할 수 있는 workflow-oriented UI를 목표로 합니다. 사용자는 case를 실행하고,
+            시스템은 enrichment, LLM summary, validation, scoring, approval, audit trail까지 enterprise operating model 관점에서 보여줍니다.
           </p>
 
           <div style={{ display: "flex", gap: "12px", marginTop: "22px", flexWrap: "wrap" }}>
@@ -436,15 +459,15 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               style={{
                 textDecoration: "none",
                 borderRadius: "999px",
-                border: "1px solid rgba(0,229,255,0.35)",
-                background: "linear-gradient(135deg, rgba(0,229,255,0.18), rgba(118,255,3,0.12))",
-                color: "#d9fbff",
+                border: "1px solid rgba(142,167,255,0.35)",
+                background: "linear-gradient(135deg, rgba(142,167,255,0.18), rgba(212,176,111,0.1))",
+                color: "#f3f6ff",
                 padding: "12px 18px",
                 fontSize: "13px",
                 fontWeight: 700,
               }}
             >
-              Jump to Live Simulator
+              Open Buyer Workspace
             </a>
             <a
               href="#process"
@@ -459,7 +482,7 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
                 fontWeight: 700,
               }}
             >
-              View BPMN Flow
+              Review Operating Model
             </a>
           </div>
 
@@ -470,11 +493,11 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
           </div>
         </SectionPanel>
 
-        <SectionPanel title="Presentation Snapshot" subtitle="발표에서 바로 읽어줄 수 있는 시스템 정의를 오른쪽에 고정합니다." accent="rgba(118,255,3,0.16)">
+        <SectionPanel title="Enterprise Snapshot" subtitle="B2B buyer가 바로 이해할 수 있는 buying signals를 한눈에 정리합니다." accent="rgba(212,176,111,0.18)">
           <div style={{ display: "grid", gap: "12px" }}>
-            <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(0,229,255,0.18)" />
+            <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(142,167,255,0.18)" />
             <MetricCard label="Status" value={status === "running" ? `Running ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? "Ready with latest result" : "Waiting for next run"} accent="rgba(255,255,255,0.08)" />
-            <MetricCard label="Scenario Pool" value={`${scenariosCount || 0} presentation scenarios`} accent="rgba(255,255,255,0.08)" />
+            <MetricCard label="Incident Library" value={`${scenariosCount || 0} curated enterprise cases`} accent="rgba(255,255,255,0.08)" />
             <MetricCard label="Last Seed" value={lastRunMeta?.seed || "No run yet"} accent="rgba(255,255,255,0.08)" />
           </div>
 
@@ -487,12 +510,20 @@ function HeroSection({ mode, status, elapsed, scenariosCount, lastRunMeta }) {
               border: "1px solid rgba(255,255,255,0.06)",
             }}
           >
-            <div style={{ color: "#f8fbff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", marginBottom: "8px" }}>Narrative Thesis</div>
+            <div style={{ color: "#f8fbff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", marginBottom: "8px" }}>Platform Positioning</div>
             <div style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.8 }}>
-              This is not a hacking tool. It is a security decision-support experience that visualizes how high-volume alerts become explainable, auditable triage outcomes.
+              This is not a hacking tool. It is a workflow intelligence layer for regulated organizations that need faster triage, auditable routing, and clearer approval boundaries.
             </div>
           </div>
         </SectionPanel>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginTop: "14px" }}>
+        {ENTERPRISE_AUDIENCES.map((item) => (
+          <SectionPanel key={item.title} title={item.title} subtitle={item.label} accent="rgba(142,167,255,0.14)">
+            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8 }}>{item.text}</div>
+          </SectionPanel>
+        ))}
       </div>
     </section>
   );
@@ -502,13 +533,13 @@ function ProblemSection() {
   return (
     <section id="problem" style={{ marginTop: "72px" }}>
       <NarrativeHeader
-        eyebrow="As-Is to To-Be"
-        title="The website should tell the red-box story before it shows any buttons."
-        description="자료 전반에서 가장 중요한 메시지는 명확합니다. 우리가 자동화하려는 것은 incident response 전체가 아니라, 반복적이고 병목이 심한 triage decision 구간입니다. 그래서 사용자는 먼저 문제를 이해하고, 그 다음에 시뮬레이터를 실행해야 합니다."
+        eyebrow="Operational Pain"
+        title="Manual triage becomes an enterprise risk when volume, regulation, and accountability collide."
+        description="B2B 관점에서 중요한 건 단순히 alert를 빨리 보는 것이 아니라, 어떤 팀이 어떤 근거로 어떤 결정을 내렸는지를 일관되게 설명할 수 있는가입니다. 이 섹션은 그 pain point를 먼저 보여줍니다."
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px" }}>
-        <SectionPanel title="As-Is Bottleneck" subtitle="문서와 BPMN에서 반복되는 현재 문제점입니다." accent="rgba(255,99,132,0.18)">
+        <SectionPanel title="As-Is Bottleneck" subtitle="문서와 BPMN에서 반복되는 현재 운영 문제입니다." accent="rgba(226,127,119,0.18)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {AS_IS_ISSUES.map((item) => (
               <div key={item} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -519,7 +550,7 @@ function ProblemSection() {
           </div>
         </SectionPanel>
 
-        <SectionPanel title="Red Box Automation Scope" subtitle="웹사이트가 가장 분명하게 강조해야 하는 범위입니다." accent="rgba(255,145,0,0.2)">
+        <SectionPanel title="Automation Scope" subtitle="구매자에게 가장 분명하게 보여줘야 하는 적용 범위입니다." accent="rgba(212,176,111,0.2)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {RED_BOX_SCOPE.map((item) => (
               <div
@@ -539,7 +570,7 @@ function ProblemSection() {
           </div>
         </SectionPanel>
 
-        <SectionPanel title="To-Be Promise" subtitle="자동화 이후에도 사람이 사라지지 않는다는 점이 중요합니다." accent="rgba(118,255,3,0.2)">
+        <SectionPanel title="Enterprise Promise" subtitle="자동화 이후에도 사람이 사라지지 않는다는 점이 중요합니다." accent="rgba(109,187,155,0.2)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {TO_BE_PROMISES.map((item) => (
               <div key={item} style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8 }}>
@@ -571,9 +602,9 @@ function ProcessSection({ activeNode, status }) {
   return (
     <section id="process" style={{ marginTop: "72px" }}>
       <NarrativeHeader
-        eyebrow="To-Be BPMN"
-        title="The BPMN flow is the primary product experience."
-        description="이 섹션은 첨부한 To-Be BPMN을 웹용으로 번역한 영역입니다. lane과 decision path가 중심이며, n8n 노드는 이 흐름을 구현하는 엔진 뷰로만 보여줍니다."
+        eyebrow="Codified Workflow"
+        title="A BPMN-backed operating model for enterprise security teams."
+        description="이 섹션은 첨부한 To-Be BPMN을 buyer-facing workflow view로 번역한 영역입니다. lane과 decision path가 중심이며, n8n 노드는 이 흐름을 구현하는 엔진 레이어로만 보여줍니다."
         action={
           <a
             href="#simulator"
@@ -581,28 +612,28 @@ function ProcessSection({ activeNode, status }) {
               textDecoration: "none",
               borderRadius: "999px",
               padding: "11px 16px",
-              color: "#dffcff",
+              color: "#eef2ff",
               fontSize: "12px",
               fontWeight: 700,
-              border: "1px solid rgba(0,229,255,0.25)",
-              background: "rgba(0,229,255,0.08)",
+              border: "1px solid rgba(142,167,255,0.25)",
+              background: "rgba(142,167,255,0.08)",
             }}
           >
-            Run This Flow Live
+            Open Workspace
           </a>
         }
       />
 
       <div style={{ display: "grid", gap: "14px" }}>
         {PROCESS_LANES.map((lane) => (
-          <SectionPanel key={lane.lane} title={lane.lane} subtitle="BPMN lane view" accent={`${lane.accent}33`}>
+          <SectionPanel key={lane.lane} title={lane.lane} subtitle="Operating lane" accent={`${lane.accent}33`}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
               {lane.steps.map((step) => {
                 const state = getProcessStepState(step.ids, activeNode, status);
                 const palette = {
                   idle: { bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.08)", text: "rgba(255,255,255,0.82)" },
                   active: { bg: `${lane.accent}12`, border: `${lane.accent}88`, text: "#ffffff" },
-                  done: { bg: "rgba(118,255,3,0.08)", border: "rgba(118,255,3,0.35)", text: "#ffffff" },
+                  done: { bg: "rgba(109,187,155,0.08)", border: "rgba(109,187,155,0.35)", text: "#ffffff" },
                   error: { bg: "rgba(255,23,68,0.08)", border: "rgba(255,23,68,0.35)", text: "#ffffff" },
                 }[state];
 
@@ -642,7 +673,7 @@ function ProcessSection({ activeNode, status }) {
           </SectionPanel>
         ))}
 
-        <SectionPanel title="Engine View" subtitle="n8n 노드는 구동 원리를 보여주는 보조 레이어로 유지합니다." accent="rgba(133, 197, 255, 0.18)">
+        <SectionPanel title="Workflow Engine Mapping" subtitle="n8n 노드는 기업용 UI 뒤에서 어떤 실행 원리를 담당하는지만 보여줍니다." accent="rgba(142,167,255,0.18)">
           <PipelineVisualizer activeNode={activeNode} status={status} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", marginTop: "14px" }}>
             {ENGINE_MAP.map((item) => (
@@ -680,8 +711,8 @@ function PipelineVisualizer({ activeNode, status }) {
 
         const colors = {
           idle: { bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.09)", text: "rgba(255,255,255,0.28)" },
-          active: { bg: "rgba(0,229,255,0.12)", border: "rgba(0,229,255,0.55)", text: "#00e5ff" },
-          done: { bg: "rgba(118,255,3,0.1)", border: "rgba(118,255,3,0.35)", text: "#76ff03" },
+          active: { bg: "rgba(142,167,255,0.12)", border: "rgba(142,167,255,0.55)", text: "#dbe4ff" },
+          done: { bg: "rgba(109,187,155,0.1)", border: "rgba(109,187,155,0.35)", text: "#bce7d7" },
           error: { bg: "rgba(255,23,68,0.08)", border: "rgba(255,23,68,0.35)", text: "#ff1744" },
         };
         const palette = colors[state];
@@ -706,7 +737,7 @@ function PipelineVisualizer({ activeNode, status }) {
                     position: "absolute",
                     inset: "-2px",
                     borderRadius: "13px",
-                    border: "2px solid rgba(0,229,255,0.28)",
+                    border: "2px solid rgba(142,167,255,0.28)",
                     animation: "pulse-border 1.5s ease-in-out infinite",
                   }}
                 />
@@ -721,7 +752,7 @@ function PipelineVisualizer({ activeNode, status }) {
                   height: "2px",
                   background:
                     state === "done" || (status === "done" && index < PIPELINE_NODES.length - 1)
-                      ? "rgba(118,255,3,0.4)"
+                      ? "rgba(109,187,155,0.4)"
                       : "rgba(255,255,255,0.08)",
                   transition: "all 0.25s ease",
                 }}
@@ -862,7 +893,7 @@ function ResultCard({ result }) {
   const aiResult = result.ai_result || {};
   const precheck = result.precheck_result || {};
   const riskMeta = RISK_META[payload.risk_level] || RISK_META.P2;
-  const sourceLabel = result.source === "demo_fallback" ? "Fallback Output" : result.source === "live" ? "Live Output" : "Demo Output";
+  const sourceLabel = result.source === "demo_fallback" ? "Fallback Case Output" : result.source === "live" ? "Connected Workflow Output" : "Sandbox Output";
 
   return (
     <div
@@ -892,7 +923,7 @@ function ResultCard({ result }) {
             {payload.risk_level}
           </div>
           <div>
-            <div style={{ fontSize: "18px", color: "#fff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>Live Triage Result</div>
+            <div style={{ fontSize: "18px", color: "#fff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>Case Decision Output</div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.48)", marginTop: "4px" }}>
               {result.scenario_label} · {sourceLabel}
             </div>
@@ -994,7 +1025,7 @@ function HistoryPanel({ history, onReplay }) {
   if (!history.length) return null;
 
   return (
-    <SectionPanel title="Run History" subtitle="발표에서는 바로 이전 seed를 다시 재생하면서 결과의 재현성을 보여줄 수 있습니다.">
+    <SectionPanel title="Case Activity" subtitle="최근 실행 이력을 통해 repeatability와 operator visibility를 함께 보여줍니다.">
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         {history.map((item) => {
           const payload = item.result?.final_payload || {};
@@ -1071,7 +1102,7 @@ function MissionControlPanel({
   lastRunMeta,
 }) {
   return (
-    <SectionPanel title="Mission Control" subtitle="랜덤 실행, seed 재현, 자동 데모까지 발표에 필요한 제어를 한 화면에서 다룹니다.">
+    <SectionPanel title="Workspace Controls" subtitle="buyer walkthrough, controlled replay, continuous demo까지 enterprise UI에 맞게 제어합니다.">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
         {["demo", "live"].map((option) => {
           const active = mode === option;
@@ -1083,9 +1114,9 @@ function MissionControlPanel({
                 borderRadius: "12px",
                 padding: "12px",
                 cursor: "pointer",
-                border: `1px solid ${active ? "rgba(0,229,255,0.4)" : "rgba(255,255,255,0.08)"}`,
-                background: active ? "rgba(0,229,255,0.12)" : "rgba(255,255,255,0.03)",
-                color: active ? "#00e5ff" : "rgba(255,255,255,0.64)",
+                border: `1px solid ${active ? "rgba(142,167,255,0.4)" : "rgba(255,255,255,0.08)"}`,
+                background: active ? "rgba(142,167,255,0.12)" : "rgba(255,255,255,0.03)",
+                color: active ? "#dbe4ff" : "rgba(255,255,255,0.64)",
                 textAlign: "left",
               }}
             >
@@ -1102,16 +1133,16 @@ function MissionControlPanel({
           disabled={isBusy}
           style={{
             borderRadius: "999px",
-            border: "1px solid rgba(0,229,255,0.35)",
-            background: "linear-gradient(135deg, rgba(0,229,255,0.18), rgba(118,255,3,0.12))",
-            color: "#00e5ff",
+            border: "1px solid rgba(142,167,255,0.35)",
+            background: "linear-gradient(135deg, rgba(142,167,255,0.18), rgba(212,176,111,0.1))",
+            color: "#eef2ff",
             padding: "10px 14px",
             fontSize: "12px",
             fontWeight: 700,
             cursor: isBusy ? "not-allowed" : "pointer",
           }}
         >
-          Weighted Random Run
+          Run Portfolio Mix
         </button>
         <button
           onClick={() => handleReplay()}
@@ -1126,7 +1157,7 @@ function MissionControlPanel({
             cursor: isBusy || !lastRunMeta ? "not-allowed" : "pointer",
           }}
         >
-          Replay Last Seed
+          Replay Last Case
         </button>
         <button
           onClick={() => setSeedInput(createSeed("manual"))}
@@ -1141,32 +1172,32 @@ function MissionControlPanel({
             cursor: isBusy ? "not-allowed" : "pointer",
           }}
         >
-          New Seed
+          New Sample ID
         </button>
         <button
           onClick={() => setAutoDemo((current) => !current)}
           disabled={mode !== "demo"}
           style={{
             borderRadius: "999px",
-            border: `1px solid ${autoDemo ? "rgba(118,255,3,0.32)" : "rgba(255,255,255,0.12)"}`,
-            background: autoDemo ? "rgba(118,255,3,0.12)" : "rgba(255,255,255,0.04)",
-            color: autoDemo ? "#76ff03" : "rgba(255,255,255,0.74)",
+            border: `1px solid ${autoDemo ? "rgba(109,187,155,0.32)" : "rgba(255,255,255,0.12)"}`,
+            background: autoDemo ? "rgba(109,187,155,0.12)" : "rgba(255,255,255,0.04)",
+            color: autoDemo ? "#bce7d7" : "rgba(255,255,255,0.74)",
             padding: "10px 14px",
             fontSize: "12px",
             cursor: mode !== "demo" ? "not-allowed" : "pointer",
           }}
         >
-          {autoDemo ? "Auto Demo On" : "Auto Demo Off"}
+          {autoDemo ? "Continuous Loop On" : "Continuous Loop Off"}
         </button>
       </div>
 
       <div style={{ marginTop: "14px" }}>
-        <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Seed Control</div>
+        <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Case Seed Control</div>
         <input
           type="text"
           value={seedInput}
           onChange={(event) => setSeedInput(event.target.value)}
-          placeholder="demo-seed-123"
+          placeholder="enterprise-case-q1"
           style={{
             width: "100%",
             borderRadius: "12px",
@@ -1179,7 +1210,7 @@ function MissionControlPanel({
           }}
         />
         <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.38)", lineHeight: 1.6 }}>
-          같은 seed를 다시 넣고 실행하면 발표 중에도 같은 랜덤 시나리오를 그대로 재현할 수 있습니다.
+          같은 seed를 다시 넣고 실행하면 buyer meeting이나 internal review에서도 동일한 case를 그대로 재현할 수 있습니다.
         </div>
       </div>
     </SectionPanel>
@@ -1188,19 +1219,19 @@ function MissionControlPanel({
 
 function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoading, scenariosCount, lastRunMeta }) {
   return (
-    <SectionPanel title="Deployment Bridge" subtitle="발표는 Demo Mode로 안전하게 진행하고, 이후에는 Live Mode로 n8n에 연결합니다.">
+    <SectionPanel title="Integration Controls" subtitle="Sandbox로 buyer demo를 진행하고, Connected Mode로 pilot workflow를 연결합니다.">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "14px" }}>
         <MetricCard label="Scenario Pool" value={scenariosLoading ? "Loading..." : `${scenariosCount} scenarios`} accent="rgba(255,255,255,0.08)" />
-        <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(0,229,255,0.25)" />
+        <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(142,167,255,0.25)" />
         <MetricCard label="Last Seed" value={lastRunMeta?.seed || "Not run yet"} accent="rgba(255,255,255,0.08)" />
       </div>
 
-      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>n8n Webhook</div>
+      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Workflow Endpoint</div>
       <input
         type="text"
         value={webhookUrl}
         onChange={(event) => setWebhookUrl(event.target.value)}
-        placeholder="https://your-n8n.app.n8n.cloud/webhook/threatwatch"
+        placeholder="https://your-n8n.app.n8n.cloud/webhook/enterprise-triage"
         style={{
           width: "100%",
           borderRadius: "12px",
@@ -1213,7 +1244,7 @@ function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoadi
         }}
       />
       <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.42)", lineHeight: 1.7 }}>
-        Demo Mode에서는 이 URL 없이도 안정적으로 시연할 수 있습니다. Live Mode에서는 Webhook을 호출하고, 실패하면 같은 시나리오의 deterministic fallback을 보여줍니다.
+        Sandbox Mode에서는 이 URL 없이도 안정적으로 시연할 수 있습니다. Connected Mode에서는 Webhook을 호출하고, 실패하면 같은 시나리오의 deterministic fallback을 보여줍니다.
       </div>
     </SectionPanel>
   );
@@ -1225,9 +1256,9 @@ function AuditSection({ result, history, lastRunMeta }) {
   return (
     <section id="audit" style={{ marginTop: "72px" }}>
       <NarrativeHeader
-        eyebrow="Audit and Governance"
-        title="The website should make trust visible, not implied."
-        description="이 프로젝트의 강점은 결과를 예쁘게 보여주는 데서 끝나지 않습니다. why, who approved, what route was taken, what was missing, what was logged 같은 운영 흔적을 웹사이트에서 바로 보여줘야 문서와 발표 메시지가 일치합니다."
+        eyebrow="Governance Layer"
+        title="The interface should make trust, evidence, and control visible."
+        description="B2B 구매자는 예쁜 결과 카드만 보지 않습니다. why, who approved, what route was taken, what was missing, what was logged 같은 운영 흔적이 화면에 드러나야 제품 신뢰가 생깁니다."
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
@@ -1239,7 +1270,7 @@ function AuditSection({ result, history, lastRunMeta }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(320px, 0.85fr)", gap: "14px", marginTop: "14px" }}>
-        <SectionPanel title="Current Audit Snapshot" subtitle="현재 실행 결과를 audit-friendly 형태로 재확인합니다." accent="rgba(118,255,3,0.16)">
+        <SectionPanel title="Current Audit Snapshot" subtitle="현재 실행 결과를 audit-friendly 형태로 재확인합니다." accent="rgba(109,187,155,0.16)">
           {result ? (
             <>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "10px", marginBottom: "14px" }}>
@@ -1282,7 +1313,7 @@ function AuditSection({ result, history, lastRunMeta }) {
 
         <SectionPanel title="Logging Surfaces" subtitle="Google Sheets와 history를 통해 발표 후에도 추적 가능한 로그를 유지합니다." accent="rgba(255,145,0,0.16)">
           <div style={{ display: "grid", gap: "10px" }}>
-            <MetricCard label="Run History Entries" value={String(history.length)} accent="rgba(255,255,255,0.08)" />
+            <MetricCard label="Case Activity Entries" value={String(history.length)} accent="rgba(255,255,255,0.08)" />
             <MetricCard label="Last Seed" value={lastRunMeta?.seed || "Not run yet"} accent="rgba(255,255,255,0.08)" />
             <MetricCard label="Shared Scenario Source" value="/public/demo-scenarios.json" accent="rgba(255,255,255,0.08)" />
           </div>
@@ -1314,8 +1345,8 @@ function StrategySection() {
   return (
     <section id="strategy" style={{ marginTop: "72px" }}>
       <NarrativeHeader
-        eyebrow="Strategic Framing"
-        title="ThreatWatch AI should feel like an operational trust layer, not a flashy AI toy."
+        eyebrow="Commercial Fit"
+        title="ThreatWatch AI should feel like a B2B operating layer, not a flashy AI demo."
         description="경쟁전략 문서와 AI disruption 분석 문서가 반복해서 말하는 것은, 보안·규제 환경에서 중요한 차별점은 신뢰, 일관성, 감사 가능성이라는 점입니다. 웹사이트도 그 방향으로 마무리되어야 합니다."
       />
 
@@ -1328,7 +1359,7 @@ function StrategySection() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(320px, 0.9fr)", gap: "14px", marginTop: "14px" }}>
-        <SectionPanel title="Recommended Presentation Flow" subtitle="이 사이트를 실제 발표에서 이렇게 사용하면 자연스럽습니다." accent="rgba(118,255,3,0.16)">
+        <SectionPanel title="Buyer Conversation Flow" subtitle="이 사이트를 buyer meeting이나 class presentation에서 이렇게 사용하면 자연스럽습니다." accent="rgba(109,187,155,0.16)">
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {PRESENTATION_FLOW.map((item, index) => (
               <div key={item} style={{ display: "grid", gridTemplateColumns: "28px minmax(0, 1fr)", gap: "12px", alignItems: "start" }}>
@@ -1337,8 +1368,8 @@ function StrategySection() {
                     width: "28px",
                     height: "28px",
                     borderRadius: "999px",
-                    background: "rgba(0,229,255,0.12)",
-                    border: "1px solid rgba(0,229,255,0.32)",
+                    background: "rgba(142,167,255,0.12)",
+                    border: "1px solid rgba(142,167,255,0.32)",
                     color: "#bdf9ff",
                     display: "flex",
                     alignItems: "center",
@@ -1355,7 +1386,7 @@ function StrategySection() {
           </div>
         </SectionPanel>
 
-        <SectionPanel title="Website Tone Guide" subtitle="디자인과 카피의 톤도 발표 내용과 맞아야 합니다." accent="rgba(255,145,0,0.16)">
+        <SectionPanel title="B2B Tone Guide" subtitle="디자인과 카피의 톤도 enterprise buyer expectation과 맞아야 합니다." accent="rgba(212,176,111,0.16)">
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {[
               "AI automation보다 explainable triage와 human accountability를 먼저 말하기",
@@ -1511,7 +1542,7 @@ export default function ThreatWatchDashboard() {
       let nextResult;
       if (mode === "live") {
         if (!webhookUrl.trim()) {
-          throw new Error("Live Mode에서는 n8n Webhook URL을 입력해야 합니다.");
+          throw new Error("Connected Mode에서는 n8n Webhook URL을 입력해야 합니다.");
         }
 
         try {
@@ -1529,7 +1560,7 @@ export default function ThreatWatchDashboard() {
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 300);
           nextResult = normalizeLiveResult(data, scenario, alertData, { mode, seed, source: "live" });
         } catch (liveError) {
-          setWarning(`Live 요청이 실패해서 동일한 시나리오의 발표용 fallback 결과를 표시합니다. (${liveError.message})`);
+          setWarning(`Connected workflow 호출이 실패해서 동일한 case의 fallback 결과를 표시합니다. (${liveError.message})`);
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 220);
           nextResult = buildDemoResult(scenario, alertData, { mode, seed, source: "demo_fallback" });
         }
@@ -1621,7 +1652,7 @@ export default function ThreatWatchDashboard() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at top left, rgba(0,229,255,0.12), transparent 24%), radial-gradient(circle at top right, rgba(118,255,3,0.07), transparent 26%), linear-gradient(180deg, #050913 0%, #08101d 45%, #050913 100%)",
+          "radial-gradient(circle at top left, rgba(142,167,255,0.14), transparent 24%), radial-gradient(circle at top right, rgba(212,176,111,0.08), transparent 28%), linear-gradient(180deg, #081019 0%, #0b1320 45%, #081019 100%)",
         color: "#e2e8f0",
         fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
       }}
@@ -1635,7 +1666,7 @@ export default function ThreatWatchDashboard() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.008) 2px, rgba(0,229,255,0.008) 4px)",
+          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(142,167,255,0.008) 2px, rgba(142,167,255,0.008) 4px)",
           pointerEvents: "none",
           zIndex: 0,
         }}
@@ -1650,9 +1681,9 @@ export default function ThreatWatchDashboard() {
 
         <section id="simulator" style={{ marginTop: "72px" }}>
           <NarrativeHeader
-            eyebrow="Live Simulator"
-            title="The demo is now a section inside the story, not the whole story."
-            description="현재 실행 엔진은 유지하면서, 발표 흐름에 맞게 selected scenario, pipeline state, result, history를 하나의 live simulator 섹션으로 묶었습니다. 여기서만 조작 패널과 webhook bridge를 보여줍니다."
+            eyebrow="Buyer Workspace"
+            title="An interactive workspace that demonstrates how the product operates."
+            description="실행 엔진은 유지하면서, 화면 언어는 더 enterprise-focused하게 다듬었습니다. selected case, pipeline state, result, history를 하나의 workspace로 묶고, 여기서만 controls와 integration bridge를 보여줍니다."
           />
 
           {scenarioLoadError ? <NoticeBanner kind="error" text={scenarioLoadError} /> : null}
@@ -1663,7 +1694,7 @@ export default function ThreatWatchDashboard() {
             <div style={{ display: "grid", gap: "14px" }}>
               <SelectedScenarioCard scenario={selectedScenario} seed={seedInput} mode={mode} lastRunMeta={lastRunMeta} />
 
-              <SectionPanel title="Execution Monitor" subtitle="웹사이트가 현재 어떤 단계까지 진행되었는지를 발표자가 실시간으로 설명할 수 있습니다." accent="rgba(0,229,255,0.18)">
+              <SectionPanel title="Execution Monitor" subtitle="현재 case가 어떤 단계까지 진행되었는지를 operator 시점에서 설명할 수 있습니다." accent="rgba(142,167,255,0.18)">
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <StatusDot status={status} />
@@ -1689,7 +1720,7 @@ export default function ThreatWatchDashboard() {
                       lineHeight: 1.8,
                     }}
                   >
-                    아직 실행된 결과가 없습니다. `Weighted Random Run` 또는 개별 시나리오를 선택하면 이 영역이 P1/P2/P3 결과 카드로 채워집니다.
+                    아직 실행된 결과가 없습니다. `Run Portfolio Mix` 또는 개별 incident template을 선택하면 이 영역이 P1/P2/P3 결과 카드로 채워집니다.
                   </div>
                 )}
               </SectionPanel>
@@ -1720,7 +1751,7 @@ export default function ThreatWatchDashboard() {
           </div>
 
           <div style={{ marginTop: "14px" }}>
-            <SectionPanel title="Scenario Library" subtitle="랜덤 실행 외에도 각 시나리오를 직접 선택해서 발표 흐름을 통제할 수 있습니다.">
+            <SectionPanel title="Incident Templates" subtitle="portfolio mix 외에도 각 case를 직접 선택해서 buyer conversation 흐름을 통제할 수 있습니다.">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
                 {scenarios.map((scenario) => (
                   <ScenarioCard
@@ -1756,7 +1787,7 @@ export default function ThreatWatchDashboard() {
             fontSize: "10px",
           }}
         >
-          <span>ThreatWatch AI Demo Site · BPMN-first SOC triage simulator</span>
+          <span>ThreatWatch AI Platform Preview · BPMN-first enterprise triage workflow</span>
           <span>Shared scenario source: /public/demo-scenarios.json</span>
         </footer>
       </main>
