@@ -117,7 +117,7 @@ const ENTERPRISE_OUTCOMES = [
 const SOLUTION_PILLARS = [
   {
     title: "Workflow Layer Over Alert Chaos",
-    text: "ThreatWatch AI는 분산된 alert 데이터를 하나의 triage workspace로 모으고, red box 구간을 표준화된 workflow로 바꿉니다.",
+    text: "ThreatWatch AI는 분산된 alert 데이터를 하나의 triage workspace로 모으고, 핵심 triage 구간을 표준화된 workflow로 바꿉니다.",
   },
   {
     title: "AI + Rules + Approval",
@@ -663,11 +663,11 @@ function ProblemSection() {
       <NarrativeHeader
         eyebrow="Operational Pain"
         title="Manual triage becomes an enterprise risk when volume, regulation, and accountability collide."
-        description="중요한 것은 단순히 alert를 빠르게 보는 것이 아니라, 어떤 팀이 어떤 근거로 어떤 결정을 내렸는지를 일관되게 설명할 수 있는가입니다. 이 섹션은 기존 운영의 병목과 red box 범위를 먼저 보여줍니다."
+        description="중요한 것은 단순히 alert를 빠르게 보는 것이 아니라, 어떤 팀이 어떤 근거로 어떤 결정을 내렸는지를 일관되게 설명할 수 있는가입니다. 이 섹션은 기존 운영의 병목과 핵심 자동화 범위를 먼저 보여줍니다."
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px" }}>
-        <SectionPanel title="As-Is Bottleneck" subtitle="문서와 BPMN에서 반복되는 현재 운영 문제입니다." accent="rgba(226,127,119,0.18)">
+        <SectionPanel title="As-Is Bottleneck" subtitle="대규모 보안 운영 환경에서 반복적으로 나타나는 문제입니다." accent="rgba(226,127,119,0.18)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {AS_IS_ISSUES.map((item) => (
               <div key={item} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -678,7 +678,7 @@ function ProblemSection() {
           </div>
         </SectionPanel>
 
-        <SectionPanel title="Red Box Scope" subtitle="PPT에서 정의한 핵심 자동화 범위입니다." accent="rgba(212,176,111,0.2)">
+        <SectionPanel title="Automation Scope" subtitle="제품이 우선적으로 표준화하는 핵심 triage 범위입니다." accent="rgba(212,176,111,0.2)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {RED_BOX_SCOPE.map((item) => (
               <div
@@ -795,7 +795,7 @@ function ProcessSection({ activeNode, status }) {
       <NarrativeHeader
         eyebrow="Codified Workflow"
         title="A BPMN-backed operating model for enterprise security teams."
-        description="이 섹션은 PPT의 메인 BPMN과 red box 흐름을 웹 제품 구조로 번역한 영역입니다. lane과 decision path가 중심이며, n8n 노드는 이 흐름을 구현하는 엔진 레이어로만 보여줍니다."
+        description="이 섹션은 메인 BPMN workflow를 웹 제품 구조로 번역한 영역입니다. lane과 decision path가 중심이며, n8n 노드는 이 흐름을 구현하는 엔진 레이어로만 보여줍니다."
         action={
           <a
             href="#simulator"
@@ -1875,64 +1875,62 @@ export default function ThreatWatchDashboard() {
           {warning ? <NoticeBanner kind="warning" text={warning} /> : null}
           {error ? <NoticeBanner kind="error" text={error} /> : null}
 
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.1fr) minmax(320px, 0.9fr)", gap: "14px", marginTop: "14px" }}>
-            <div style={{ display: "grid", gap: "14px" }}>
-              <SelectedScenarioCard scenario={selectedScenario} seed={seedInput} mode={mode} lastRunMeta={lastRunMeta} />
+          <div style={{ display: "grid", gap: "14px", marginTop: "14px" }}>
+            <SelectedScenarioCard scenario={selectedScenario} seed={seedInput} mode={mode} lastRunMeta={lastRunMeta} />
 
-              <SectionPanel title="Execution Monitor" subtitle="현재 case가 어떤 단계까지 진행되었는지를 operator 시점에서 설명할 수 있습니다." accent="rgba(142,167,255,0.18)">
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <StatusDot status={status} />
-                    <span style={{ color: "rgba(255,255,255,0.78)", fontSize: "12px" }}>
-                      {status === "running" ? `Running ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? "Last run completed" : "Ready for next scenario"}
-                    </span>
-                  </div>
-                  <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "11px" }}>{MODE_COPY[mode].subtitle}</span>
+            <SectionPanel title="Execution Monitor" subtitle="현재 case가 어떤 단계까지 진행되었는지를 operator 시점에서 설명할 수 있습니다." accent="rgba(142,167,255,0.18)">
+              <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <StatusDot status={status} />
+                  <span style={{ color: "rgba(255,255,255,0.78)", fontSize: "12px" }}>
+                    {status === "running" ? `Running ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? "Last run completed" : "Ready for next scenario"}
+                  </span>
                 </div>
-                <PipelineVisualizer activeNode={activeNode} status={status} />
-                {result ? (
-                  <ResultCard result={result} />
-                ) : (
-                  <div
-                    style={{
-                      marginTop: "18px",
-                      borderRadius: "18px",
-                      padding: "20px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px dashed rgba(255,255,255,0.08)",
-                      color: "rgba(255,255,255,0.62)",
-                      fontSize: "13px",
-                      lineHeight: 1.8,
-                    }}
-                  >
-                    아직 실행된 결과가 없습니다. `Run Case Mix` 또는 개별 incident template을 선택하면 이 영역이 P1/P2/P3 결과 카드로 채워집니다.
-                  </div>
-                )}
-              </SectionPanel>
-            </div>
+                <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "11px" }}>{MODE_COPY[mode].subtitle}</span>
+              </div>
+              <PipelineVisualizer activeNode={activeNode} status={status} />
+              {result ? (
+                <ResultCard result={result} />
+              ) : (
+                <div
+                  style={{
+                    marginTop: "18px",
+                    borderRadius: "18px",
+                    padding: "20px",
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px dashed rgba(255,255,255,0.08)",
+                    color: "rgba(255,255,255,0.62)",
+                    fontSize: "13px",
+                    lineHeight: 1.8,
+                  }}
+                >
+                  아직 실행된 결과가 없습니다. `Run Case Mix` 또는 개별 incident template을 선택하면 이 영역이 P1/P2/P3 결과 카드로 채워집니다.
+                </div>
+              )}
+            </SectionPanel>
+          </div>
 
-            <div style={{ display: "grid", gap: "14px" }}>
-              <MissionControlPanel
-                mode={mode}
-                setMode={setMode}
-                handleRandomRun={handleRandomRun}
-                handleReplay={handleReplay}
-                seedInput={seedInput}
-                setSeedInput={setSeedInput}
-                autoDemo={autoDemo}
-                setAutoDemo={setAutoDemo}
-                isBusy={isBusy || !scenarios.length}
-                lastRunMeta={lastRunMeta}
-              />
-              <DeploymentBridgePanel
-                mode={mode}
-                webhookUrl={webhookUrl}
-                setWebhookUrl={setWebhookUrl}
-                scenariosLoading={scenariosLoading}
-                scenariosCount={scenarios.length}
-                lastRunMeta={lastRunMeta}
-              />
-            </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
+            <MissionControlPanel
+              mode={mode}
+              setMode={setMode}
+              handleRandomRun={handleRandomRun}
+              handleReplay={handleReplay}
+              seedInput={seedInput}
+              setSeedInput={setSeedInput}
+              autoDemo={autoDemo}
+              setAutoDemo={setAutoDemo}
+              isBusy={isBusy || !scenarios.length}
+              lastRunMeta={lastRunMeta}
+            />
+            <DeploymentBridgePanel
+              mode={mode}
+              webhookUrl={webhookUrl}
+              setWebhookUrl={setWebhookUrl}
+              scenariosLoading={scenariosLoading}
+              scenariosCount={scenarios.length}
+              lastRunMeta={lastRunMeta}
+            />
           </div>
 
           <div style={{ marginTop: "14px" }}>
@@ -1972,8 +1970,8 @@ export default function ThreatWatchDashboard() {
             fontSize: "10px",
           }}
         >
-          <span>ThreatWatch AI Platform · BPMN-based enterprise triage workflow</span>
-          <span>Shared scenario source: /public/demo-scenarios.json</span>
+          <span>ThreatWatch AI Platform · Enterprise triage workflow</span>
+          <span>AI-assisted routing, approval, and audit-ready case handling</span>
         </footer>
       </main>
     </div>
