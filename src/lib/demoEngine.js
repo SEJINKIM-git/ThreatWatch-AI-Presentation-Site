@@ -86,7 +86,7 @@ export function pickWeightedScenario(scenarios, seed) {
   return scenarios[scenarios.length - 1];
 }
 
-export function buildAlertData(scenario, seed) {
+export function buildAlertData(scenario, seed, overrides = {}) {
   const rng = createRng(`${seed}:${scenario.id}`);
   const timestamp = new Date().toISOString();
   const riskLevel = scenario.risk_level || scenario.expected_output?.risk_level || "P2";
@@ -102,6 +102,7 @@ export function buildAlertData(scenario, seed) {
     run_id: `${scenario.id}-${seedSuffix}`,
     retry_count: scenario.precheck?.retry_count || baseInput.retry_count || 0,
     ...baseInput,
+    ...overrides,
   };
 }
 
@@ -136,6 +137,17 @@ export function buildDemoResult(scenario, alertData, options = {}) {
     presenter_note: scenario.presenter_note,
     raw_alert: alertData,
     precheck_result: precheck,
+    delivery: {
+      requested: Boolean(options.recipientEmail),
+      channel: options.recipientEmail ? "email" : "workspace",
+      recipient: options.recipientEmail || "",
+      status: options.recipientEmail ? (options.source === "demo_fallback" ? "not_sent" : "preview_only") : "not_requested",
+      message: options.recipientEmail
+        ? options.source === "demo_fallback"
+          ? "Connected workflow failed, so no live email was sent."
+          : "Scenario Mode preview completed. Switch to Connected Workflow to send a real alert email."
+        : "Workspace preview completed.",
+    },
     ai_result: {
       summary_bullets: summaryBullets,
       risk_level: riskLevel,
@@ -163,6 +175,8 @@ export function normalizeLiveResult(data, scenario, alertData, options = {}) {
   const expected = scenario.expected_output || {};
   const rawPayload = data?.final_payload || data || {};
   const riskLevel = rawPayload.risk_level || expected.risk_level || scenario.risk_level || "P2";
+  const deliveryPayload = data?.delivery || {};
+  const requested = Boolean(options.recipientEmail);
 
   return {
     ...data,
@@ -174,6 +188,13 @@ export function normalizeLiveResult(data, scenario, alertData, options = {}) {
     expected_route: scenario.expected_route,
     presenter_note: scenario.presenter_note,
     raw_alert: alertData,
+    delivery: {
+      requested,
+      channel: deliveryPayload.channel || (requested ? "email" : "workspace"),
+      recipient: deliveryPayload.recipient || options.recipientEmail || rawPayload.notification_email || alertData.notification_email || "",
+      status: deliveryPayload.status || (requested ? "sent" : "not_requested"),
+      message: deliveryPayload.message || (requested ? "Alert email accepted by the connected workflow." : "Connected workflow completed."),
+    },
     final_payload: {
       alert_id: rawPayload.alert_id || alertData.alert_id,
       timestamp: rawPayload.timestamp || alertData.timestamp,

@@ -15,6 +15,7 @@ const STORAGE_KEYS = {
   mode: "threatwatch.mode",
   webhookUrl: "threatwatch.webhook_url",
   seed: "threatwatch.seed",
+  recipientEmail: "threatwatch.recipient_email",
 };
 
 const MODE_COPY = {
@@ -265,6 +266,14 @@ function readStoredValue(key, fallback) {
 function writeStoredValue(key, value) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(key, value);
+}
+
+function normalizeRecipientEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeRecipientEmail(value));
 }
 
 function NarrativeHeader({ eyebrow, title, description, action }) {
@@ -1083,8 +1092,15 @@ function ResultCard({ result }) {
   const payload = result.final_payload || result;
   const aiResult = result.ai_result || {};
   const precheck = result.precheck_result || {};
+  const delivery = result.delivery || {};
   const riskMeta = RISK_META[payload.risk_level] || RISK_META.P2;
   const sourceLabel = result.source === "demo_fallback" ? "Fallback Case Output" : result.source === "live" ? "Connected Workflow Output" : "Scenario Mode Output";
+  const deliveryTone =
+    delivery.status === "sent"
+      ? { bg: "rgba(109,187,155,0.12)", border: "rgba(109,187,155,0.36)", text: "#bce7d7" }
+      : delivery.status === "not_sent"
+        ? { bg: "rgba(255,23,68,0.08)", border: "rgba(255,23,68,0.28)", text: "#ff8fa3" }
+        : { bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.08)", text: "rgba(255,255,255,0.72)" };
 
   return (
     <div
@@ -1147,6 +1163,21 @@ function ResultCard({ result }) {
           >
             {result.expected_route || "Route pending"}
           </span>
+          {delivery.requested ? (
+            <span
+              style={{
+                borderRadius: "999px",
+                padding: "6px 10px",
+                fontSize: "10px",
+                fontWeight: 700,
+                color: deliveryTone.text,
+                background: deliveryTone.bg,
+                border: `1px solid ${deliveryTone.border}`,
+              }}
+            >
+              {delivery.status === "sent" ? "Email delivered" : delivery.status === "not_sent" ? "Email not sent" : "Email preview"}
+            </span>
+          ) : null}
         </div>
       </div>
 
@@ -1157,7 +1188,23 @@ function ResultCard({ result }) {
         <MetricCard label="Confidence" value={payload.confidence ? `${Math.round(payload.confidence * 100)}%` : "N/A"} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="PreCheck" value={precheck.decision || "—"} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="Missing Data" value={String(payload.missing_data_count ?? 0)} accent="rgba(255,255,255,0.08)" />
+        {delivery.requested ? <MetricCard label="Recipient" value={delivery.recipient || "—"} accent="rgba(109,187,155,0.22)" /> : null}
       </div>
+
+      {delivery.requested ? (
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: "14px",
+            padding: "16px",
+            marginBottom: "14px",
+          }}
+        >
+          <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Inbox Delivery Status</div>
+          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.82)", lineHeight: 1.8 }}>{delivery.message}</div>
+        </div>
+      ) : null}
 
       <div
         style={{
@@ -1257,6 +1304,9 @@ function HistoryPanel({ history, onReplay }) {
                 <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.24)" }}>
                   {item.duration ? `${(item.duration / 1000).toFixed(1)}s` : "—"} · {item.source}
                 </span>
+                {item.result?.delivery?.recipient ? (
+                  <span style={{ fontSize: "11px", color: "rgba(133, 197, 255, 0.82)" }}>email {item.result.delivery.recipient}</span>
+                ) : null}
               </div>
               <button
                 onClick={() => onReplay(item)}
@@ -1408,6 +1458,106 @@ function MissionControlPanel({
   );
 }
 
+function InboxDeliveryPanel({
+  mode,
+  webhookUrl,
+  recipientEmail,
+  setRecipientEmail,
+  selectedScenario,
+  handleSendEmail,
+  isBusy,
+  result,
+}) {
+  const trimmedEmail = normalizeRecipientEmail(recipientEmail);
+  const emailReady = isValidEmail(trimmedEmail);
+  const webhookReady = Boolean(webhookUrl.trim());
+  const delivery = result?.delivery || null;
+
+  let helperText = "수신자 이메일을 입력하고, 현재 선택된 incident를 실제 알림 메일로 받아볼 수 있습니다.";
+  if (!selectedScenario) {
+    helperText = "먼저 incident template을 하나 선택해 주세요.";
+  } else if (!emailReady) {
+    helperText = "실제 메일을 보내려면 유효한 이메일 주소를 입력해 주세요.";
+  } else if (!webhookReady) {
+    helperText = "실제 발송은 n8n Webhook URL이 설정되어 있어야 합니다.";
+  } else if (mode !== "live") {
+    helperText = "메일 발송을 누르면 Connected Workflow로 전환해 실제 이메일 전달을 시도합니다.";
+  }
+
+  return (
+    <SectionPanel title="Inbox Delivery" subtitle="선택한 incident를 체험자의 실제 이메일 inbox로 보내는 체험 패널입니다." accent="rgba(109,187,155,0.18)">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "14px" }}>
+        <MetricCard label="Selected Case" value={selectedScenario?.label || "Select a template"} accent="rgba(255,255,255,0.08)" />
+        <MetricCard label="Delivery Path" value={webhookReady ? "n8n Email Workflow" : "Webhook required"} accent="rgba(142,167,255,0.25)" />
+        <MetricCard label="Last Delivery" value={delivery?.recipient || "No email sent yet"} accent="rgba(255,255,255,0.08)" />
+      </div>
+
+      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Recipient Email</div>
+      <input
+        type="email"
+        value={recipientEmail}
+        onChange={(event) => setRecipientEmail(event.target.value)}
+        placeholder="name@company.com"
+        style={{
+          width: "100%",
+          borderRadius: "12px",
+          border: `1px solid ${recipientEmail && !emailReady ? "rgba(255,23,68,0.28)" : "rgba(255,255,255,0.09)"}`,
+          background: "rgba(0,0,0,0.24)",
+          color: "#fff",
+          padding: "12px 14px",
+          fontSize: "12px",
+          outline: "none",
+        }}
+      />
+
+      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(255,255,255,0.46)", lineHeight: 1.7 }}>{helperText}</div>
+
+      <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap" }}>
+        <button
+          onClick={handleSendEmail}
+          disabled={isBusy || !selectedScenario || !emailReady || !webhookReady}
+          style={{
+            borderRadius: "999px",
+            border: "1px solid rgba(109,187,155,0.34)",
+            background: "linear-gradient(135deg, rgba(109,187,155,0.18), rgba(142,167,255,0.1))",
+            color: "#eefaf4",
+            padding: "10px 14px",
+            fontSize: "12px",
+            fontWeight: 700,
+            cursor: isBusy || !selectedScenario || !emailReady || !webhookReady ? "not-allowed" : "pointer",
+            opacity: isBusy || !selectedScenario || !emailReady || !webhookReady ? 0.56 : 1,
+          }}
+        >
+          Send Alert to My Inbox
+        </button>
+      </div>
+
+      <div style={{ marginTop: "14px", display: "grid", gap: "8px" }}>
+        {[
+          "Webhook payload에 `notification_email`과 `delivery_channel=email`이 함께 전달됩니다.",
+          "n8n이 정상 응답하면 결과 카드에 delivery status와 recipient가 함께 표시됩니다.",
+          "실제 발송은 Connected Workflow와 Gmail/메일 노드 설정이 연결되어 있어야 합니다.",
+        ].map((item) => (
+          <div
+            key={item}
+            style={{
+              padding: "10px 12px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              color: "rgba(255,255,255,0.76)",
+              fontSize: "12px",
+              lineHeight: 1.7,
+            }}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
+    </SectionPanel>
+  );
+}
+
 function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoading, scenariosCount, lastRunMeta }) {
   return (
     <SectionPanel title="Integration Bridge" subtitle="Scenario Mode로 기본 동작을 검증하고, Connected Workflow로 n8n과 연동합니다.">
@@ -1436,6 +1586,9 @@ function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoadi
       />
       <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.42)", lineHeight: 1.7 }}>
         Scenario Mode에서는 URL 없이도 제품의 기본 동작을 검증할 수 있습니다. Connected Workflow에서는 Webhook을 호출하고, 실패하면 같은 시나리오의 deterministic fallback을 보여줍니다.
+      </div>
+      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(133, 197, 255, 0.82)", lineHeight: 1.7 }}>
+        메일 체험을 연결하려면 n8n 메일 노드의 recipient를 `notification_email` 필드에 매핑해 주세요.
       </div>
     </SectionPanel>
   );
@@ -1607,6 +1760,7 @@ export default function ThreatWatchDashboard() {
   const [mode, setMode] = useState(() => readStoredValue(STORAGE_KEYS.mode, "demo"));
   const [webhookUrl, setWebhookUrl] = useState(() => readStoredValue(STORAGE_KEYS.webhookUrl, ""));
   const [seedInput, setSeedInput] = useState(() => readStoredValue(STORAGE_KEYS.seed, ""));
+  const [recipientEmail, setRecipientEmail] = useState(() => readStoredValue(STORAGE_KEYS.recipientEmail, ""));
   const [selectedScenarioId, setSelectedScenarioId] = useState(null);
   const [status, setStatus] = useState("idle");
   const [activeNode, setActiveNode] = useState(null);
@@ -1670,6 +1824,10 @@ export default function ThreatWatchDashboard() {
   }, [seedInput]);
 
   useEffect(() => {
+    writeStoredValue(STORAGE_KEYS.recipientEmail, recipientEmail);
+  }, [recipientEmail]);
+
+  useEffect(() => {
     return () => window.clearInterval(timerRef.current);
   }, []);
 
@@ -1703,11 +1861,15 @@ export default function ThreatWatchDashboard() {
     return nextSeed;
   }
 
-  async function runScenario(scenario, seed) {
+  async function runScenario(scenario, seed, runtime = {}) {
     if (!scenario) {
       setError("실행할 시나리오를 먼저 선택해주세요.");
       return;
     }
+
+    const normalizedRecipient = normalizeRecipientEmail(runtime.recipientEmail);
+    const deliveryRequested = Boolean(normalizedRecipient);
+    const useLiveWorkflow = runtime.forceLive || mode === "live";
 
     setStatus("running");
     setError(null);
@@ -1717,16 +1879,22 @@ export default function ThreatWatchDashboard() {
     setActiveNode(null);
 
     const startedAt = startClock();
-    const alertData = buildAlertData(scenario, seed);
+    const alertData = buildAlertData(scenario, seed, {
+      recipient_email: normalizedRecipient,
+      notification_email: normalizedRecipient,
+      delivery_requested: deliveryRequested,
+      delivery_channel: deliveryRequested ? "email" : "workspace",
+      email_experience_requested: deliveryRequested,
+    });
 
     try {
       await runPipelineSequence(setActiveNode, ["trigger", "build", "precheck"], 420);
       setActiveNode("llm");
 
       let nextResult;
-      if (mode === "live") {
+      if (useLiveWorkflow) {
         if (!webhookUrl.trim()) {
-          throw new Error("Connected Mode에서는 n8n Webhook URL을 입력해야 합니다.");
+          throw new Error(deliveryRequested ? "실제 이메일 체험을 하려면 n8n Webhook URL을 입력해야 합니다." : "Connected Workflow에서는 n8n Webhook URL을 입력해야 합니다.");
         }
 
         try {
@@ -1742,21 +1910,40 @@ export default function ThreatWatchDashboard() {
 
           const data = await response.json();
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 300);
-          nextResult = normalizeLiveResult(data, scenario, alertData, { mode, seed, source: "live" });
+          nextResult = normalizeLiveResult(data, scenario, alertData, {
+            mode: "live",
+            seed,
+            source: "live",
+            recipientEmail: normalizedRecipient,
+          });
         } catch (liveError) {
-          setWarning(`Connected workflow 호출이 실패해서 동일한 case의 fallback 결과를 표시합니다. (${liveError.message})`);
+          setWarning(
+            deliveryRequested
+              ? `Connected workflow 호출이 실패해서 이메일은 발송되지 않았고, 동일한 case의 fallback 결과를 표시합니다. (${liveError.message})`
+              : `Connected workflow 호출이 실패해서 동일한 case의 fallback 결과를 표시합니다. (${liveError.message})`,
+          );
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 220);
-          nextResult = buildDemoResult(scenario, alertData, { mode, seed, source: "demo_fallback" });
+          nextResult = buildDemoResult(scenario, alertData, {
+            mode: "live",
+            seed,
+            source: "demo_fallback",
+            recipientEmail: normalizedRecipient,
+          });
         }
       } else {
         await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 280);
-        nextResult = buildDemoResult(scenario, alertData, { mode, seed, source: "demo" });
+        nextResult = buildDemoResult(scenario, alertData, {
+          mode,
+          seed,
+          source: "demo",
+          recipientEmail: normalizedRecipient,
+        });
       }
 
       const duration = stopClock(startedAt);
       setResult(nextResult);
       setStatus("done");
-      setLastRunMeta({ scenarioId: scenario.id, seed, source: nextResult.source });
+      setLastRunMeta({ scenarioId: scenario.id, seed, source: nextResult.source, recipientEmail: normalizedRecipient });
       setHistory((previous) =>
         [
           {
@@ -1826,7 +2013,35 @@ export default function ThreatWatchDashboard() {
     const replayScenario = resolveScenarioById(scenarios, item.scenarioId);
     if (!replayScenario) return;
     setSeedInput(item.seed);
-    runScenario(replayScenario, item.seed);
+    runScenario(replayScenario, item.seed, { recipientEmail: item.recipientEmail || "" });
+  };
+
+  const handleSendEmail = () => {
+    if (!selectedScenario) {
+      setError("메일을 보내기 전에 incident template을 먼저 선택해주세요.");
+      return;
+    }
+
+    const normalizedRecipient = normalizeRecipientEmail(recipientEmail);
+    if (!isValidEmail(normalizedRecipient)) {
+      setError("유효한 이메일 주소를 입력해주세요.");
+      return;
+    }
+
+    if (!webhookUrl.trim()) {
+      setError("실제 이메일 체험을 하려면 n8n Webhook URL을 먼저 입력해야 합니다.");
+      return;
+    }
+
+    if (mode !== "live") {
+      setMode("live");
+    }
+
+    const nextSeed = resolveRunSeed(`${selectedScenario.id}-email`);
+    runScenario(selectedScenario, nextSeed, {
+      forceLive: true,
+      recipientEmail: normalizedRecipient,
+    });
   };
 
   const isBusy = status === "running" || scenariosLoading;
@@ -1911,6 +2126,16 @@ export default function ThreatWatchDashboard() {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
+            <InboxDeliveryPanel
+              mode={mode}
+              webhookUrl={webhookUrl}
+              recipientEmail={recipientEmail}
+              setRecipientEmail={setRecipientEmail}
+              selectedScenario={selectedScenario}
+              handleSendEmail={handleSendEmail}
+              isBusy={isBusy || !scenarios.length}
+              result={result}
+            />
             <MissionControlPanel
               mode={mode}
               setMode={setMode}
