@@ -18,6 +18,28 @@ const STORAGE_KEYS = {
   recipientEmail: "threatwatch.recipient_email",
 };
 
+const THEME = {
+  bg: "#050914",
+  bgDeep: "#030712",
+  panel: "rgba(7, 14, 28, 0.76)",
+  panelStrong: "rgba(6, 12, 24, 0.9)",
+  line: "rgba(195, 214, 246, 0.12)",
+  lineStrong: "rgba(225, 238, 255, 0.24)",
+  text: "#f5f8ff",
+  textSoft: "rgba(226, 234, 248, 0.74)",
+  textMuted: "rgba(184, 199, 224, 0.48)",
+  accentBlue: "#9ab6ea",
+  accentBlueSoft: "rgba(154, 182, 234, 0.16)",
+  accentCoral: "#c68f98",
+  accentCoralSoft: "rgba(198, 143, 152, 0.12)",
+  accentGlow: "rgba(238, 245, 255, 0.5)",
+  heroImage: "/security-design-hero.png",
+};
+
+const DISPLAY_FONT = "'Orbitron', sans-serif";
+const BODY_FONT = "'Exo 2', sans-serif";
+const MONO_FONT = "'IBM Plex Mono', monospace";
+
 const MODE_COPY = {
   demo: {
     label: "Scenario Mode",
@@ -283,11 +305,12 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
         <div
           style={{
             fontSize: "11px",
-            color: "rgba(133, 197, 255, 0.9)",
+            color: THEME.accentBlue,
             textTransform: "uppercase",
-            letterSpacing: "1.4px",
+            letterSpacing: "2px",
             fontWeight: 700,
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: DISPLAY_FONT,
+            textShadow: `0 0 14px ${THEME.accentGlow}`,
           }}
         >
           {eyebrow}
@@ -295,16 +318,18 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
         <h2
           style={{
             margin: "8px 0 0",
-            color: "#f8fbff",
+            color: THEME.text,
             fontSize: "34px",
             lineHeight: 1.12,
             fontWeight: 800,
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: DISPLAY_FONT,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
           }}
         >
           {title}
         </h2>
-        <p style={{ margin: "12px 0 0", color: "rgba(229, 237, 247, 0.7)", fontSize: "15px", lineHeight: 1.8 }}>{description}</p>
+        <p style={{ margin: "12px 0 0", color: THEME.textSoft, fontSize: "15px", lineHeight: 1.8, fontFamily: BODY_FONT }}>{description}</p>
       </div>
       {action ? <div>{action}</div> : null}
     </div>
@@ -315,28 +340,28 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
   return (
     <div
       style={{
-        background: "linear-gradient(180deg, rgba(15,21,33,0.94), rgba(10,14,24,0.92))",
+        background: `linear-gradient(180deg, ${THEME.panelStrong}, ${THEME.panel})`,
         border: `1px solid ${accent}`,
         borderRadius: "22px",
         padding: "20px",
-        boxShadow: "0 24px 54px rgba(0,0,0,0.18)",
-        backdropFilter: "blur(18px)",
+        boxShadow: `0 0 0 1px ${THEME.line}, 0 24px 54px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.04)`,
+        backdropFilter: "blur(22px)",
       }}
     >
       <div style={{ marginBottom: "16px" }}>
         <div
           style={{
             fontSize: "11px",
-            color: "rgba(255,255,255,0.38)",
-            letterSpacing: "0.9px",
+            color: THEME.textMuted,
+            letterSpacing: "1.4px",
             textTransform: "uppercase",
             fontWeight: 700,
-            fontFamily: "'Space Grotesk', sans-serif",
+            fontFamily: DISPLAY_FONT,
           }}
         >
           {title}
         </div>
-        {subtitle ? <div style={{ marginTop: "6px", color: "rgba(255,255,255,0.6)", fontSize: "12px", lineHeight: 1.7 }}>{subtitle}</div> : null}
+        {subtitle ? <div style={{ marginTop: "6px", color: THEME.textSoft, fontSize: "12px", lineHeight: 1.7, fontFamily: BODY_FONT }}>{subtitle}</div> : null}
       </div>
       {children}
     </div>
@@ -353,22 +378,24 @@ function TrustBand() {
         marginTop: "18px",
         padding: "14px 16px",
         borderRadius: "18px",
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(255,255,255,0.02)",
+        border: `1px solid ${THEME.line}`,
+        boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04)`,
       }}
     >
-      <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "11px", letterSpacing: "1px", textTransform: "uppercase" }}>Designed for teams in</span>
+      <span style={{ color: THEME.textMuted, fontSize: "11px", letterSpacing: "1.6px", textTransform: "uppercase", fontFamily: DISPLAY_FONT }}>Designed for teams in</span>
       {TRUST_BAND.map((item) => (
         <span
           key={item}
           style={{
             padding: "8px 12px",
             borderRadius: "999px",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.78)",
+            background: "rgba(255,255,255,0.03)",
+            border: `1px solid ${THEME.line}`,
+            color: THEME.textSoft,
             fontSize: "12px",
             fontWeight: 600,
+            fontFamily: BODY_FONT,
           }}
         >
           {item}
@@ -384,17 +411,18 @@ function HeroProductPreview({ mode, status, lastRunMeta }) {
       style={{
         borderRadius: "24px",
         padding: "20px",
-        background: "linear-gradient(180deg, rgba(15,20,32,0.98), rgba(10,13,22,0.96))",
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 30px 60px rgba(0,0,0,0.22)",
+        background: `linear-gradient(180deg, rgba(8, 15, 29, 0.9), rgba(4, 9, 19, 0.92))`,
+        border: `1px solid ${THEME.lineStrong}`,
+        boxShadow: `0 30px 60px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.05)`,
+        backdropFilter: "blur(18px)",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
         <div>
-          <div style={{ color: "rgba(255,255,255,0.42)", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase" }}>Product Workspace</div>
-          <div style={{ marginTop: "6px", color: "#f7f8fd", fontSize: "22px", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif" }}>Enterprise case orchestration</div>
+          <div style={{ color: THEME.textMuted, fontSize: "10px", letterSpacing: "1.4px", textTransform: "uppercase", fontFamily: DISPLAY_FONT }}>Product Workspace</div>
+          <div style={{ marginTop: "6px", color: THEME.text, fontSize: "22px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.06em", textTransform: "uppercase" }}>Command Surface</div>
         </div>
-        <div style={{ padding: "7px 12px", borderRadius: "999px", background: "rgba(142,167,255,0.12)", border: "1px solid rgba(142,167,255,0.24)", color: "#e3e9ff", fontSize: "11px", fontWeight: 700 }}>
+        <div style={{ padding: "7px 12px", borderRadius: "999px", background: THEME.accentBlueSoft, border: `1px solid ${THEME.lineStrong}`, color: THEME.text, fontSize: "11px", fontWeight: 700, fontFamily: DISPLAY_FONT }}>
           {MODE_COPY[mode].label}
         </div>
       </div>
@@ -404,11 +432,11 @@ function HeroProductPreview({ mode, status, lastRunMeta }) {
           style={{
             borderRadius: "18px",
             padding: "16px",
-            background: "linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02))",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))",
+            border: `1px solid ${THEME.line}`,
           }}
         >
-          <div style={{ color: "rgba(255,255,255,0.42)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.8px" }}>Control signals</div>
+          <div style={{ color: THEME.textMuted, fontSize: "10px", textTransform: "uppercase", letterSpacing: "1.2px", fontFamily: DISPLAY_FONT }}>Control signals</div>
           <div style={{ marginTop: "12px", display: "grid", gap: "10px" }}>
             {["Unified intake", "Approval workflow", "Audit-ready evidence"].map((item) => (
               <div
@@ -417,9 +445,10 @@ function HeroProductPreview({ mode, status, lastRunMeta }) {
                   borderRadius: "14px",
                   padding: "12px 14px",
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  color: "rgba(255,255,255,0.82)",
+                  border: `1px solid ${THEME.line}`,
+                  color: THEME.textSoft,
                   fontSize: "13px",
+                  fontFamily: BODY_FONT,
                 }}
               >
                 {item}
@@ -442,14 +471,15 @@ function MetricCard({ label, value, accent }) {
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.03)",
-        border: `1px solid ${accent || "rgba(255,255,255,0.06)"}`,
+        background: "rgba(255,255,255,0.025)",
+        border: `1px solid ${accent || THEME.line}`,
         borderRadius: "14px",
         padding: "14px",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
       }}
     >
-      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.36)", textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: "6px" }}>{label}</div>
-      <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.88)", fontWeight: 600, lineHeight: 1.55, whiteSpace: "pre-line" }}>{value}</div>
+      <div style={{ fontSize: "10px", color: THEME.textMuted, textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: "6px", fontFamily: DISPLAY_FONT }}>{label}</div>
+      <div style={{ fontSize: "13px", color: THEME.text, fontWeight: 600, lineHeight: 1.55, whiteSpace: "pre-line", fontFamily: BODY_FONT }}>{value}</div>
     </div>
   );
 }
@@ -500,9 +530,9 @@ function TopNav({ mode, status }) {
         position: "sticky",
         top: 0,
         zIndex: 20,
-        backdropFilter: "blur(18px)",
-        background: "rgba(10, 14, 24, 0.84)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        backdropFilter: "blur(22px)",
+        background: "rgba(4, 9, 18, 0.72)",
+        borderBottom: `1px solid ${THEME.line}`,
       }}
     >
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "18px", flexWrap: "wrap" }}>
@@ -512,21 +542,22 @@ function TopNav({ mode, status }) {
               width: "40px",
               height: "40px",
               borderRadius: "14px",
-              background: "linear-gradient(135deg, #8ea7ff, #d4b06f)",
+              background: "linear-gradient(135deg, rgba(238,245,255,0.96), rgba(154,182,234,0.92))",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#101725",
+              color: "#09111f",
               fontWeight: 900,
               fontSize: "18px",
-              fontFamily: "'Space Grotesk', sans-serif",
+              fontFamily: DISPLAY_FONT,
+              boxShadow: `0 0 18px rgba(255,255,255,0.24)`,
             }}
           >
             T
           </div>
           <div>
-            <div style={{ color: "#f8fbff", fontWeight: 800, fontSize: "14px", fontFamily: "'Space Grotesk', sans-serif" }}>ThreatWatch AI</div>
-            <div style={{ color: "rgba(255,255,255,0.45)", fontSize: "11px" }}>Enterprise security workflow intelligence</div>
+            <div style={{ color: THEME.text, fontWeight: 800, fontSize: "14px", fontFamily: DISPLAY_FONT, letterSpacing: "0.08em", textTransform: "uppercase" }}>ThreatWatch AI</div>
+            <div style={{ color: THEME.textMuted, fontSize: "11px", fontFamily: BODY_FONT }}>Enterprise security workflow intelligence</div>
           </div>
         </div>
 
@@ -537,13 +568,16 @@ function TopNav({ mode, status }) {
                 key={item.id}
                 href={`#${item.id}`}
                 style={{
-                  color: "rgba(255,255,255,0.62)",
+                  color: THEME.textSoft,
                   textDecoration: "none",
                   fontSize: "12px",
                   padding: "8px 10px",
                   borderRadius: "999px",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  background: "rgba(255,255,255,0.02)",
+                  border: `1px solid ${THEME.line}`,
+                  background: "rgba(255,255,255,0.025)",
+                  fontFamily: DISPLAY_FONT,
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
                 }}
               >
                 {item.label}
@@ -557,17 +591,21 @@ function TopNav({ mode, status }) {
               fontSize: "12px",
               padding: "10px 14px",
               borderRadius: "999px",
-              border: "1px solid rgba(142,167,255,0.2)",
-              background: "linear-gradient(135deg, rgba(142,167,255,0.16), rgba(212,176,111,0.08))",
-              color: "#f4f6ff",
+              border: `1px solid ${THEME.lineStrong}`,
+              background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(154,182,234,0.16))",
+              color: THEME.text,
               fontWeight: 700,
+              fontFamily: DISPLAY_FONT,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              boxShadow: `0 0 24px rgba(255,255,255,0.08)`,
             }}
           >
             Explore the product
           </a>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "999px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderRadius: "999px", background: "rgba(255,255,255,0.03)", border: `1px solid ${THEME.line}` }}>
             <StatusDot status={status} />
-            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)" }}>{MODE_COPY[mode].label}</span>
+            <span style={{ fontSize: "12px", color: THEME.textSoft, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{MODE_COPY[mode].label}</span>
           </div>
         </div>
       </div>
@@ -578,89 +616,139 @@ function TopNav({ mode, status }) {
 function HeroSection({ mode, status, lastRunMeta }) {
   return (
     <section id="overview" style={{ paddingTop: "40px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(320px, 0.8fr)", gap: "18px", alignItems: "stretch" }}>
-        <SectionPanel accent="rgba(142,167,255,0.22)">
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              borderRadius: "999px",
-              border: "1px solid rgba(212,176,111,0.25)",
-              background: "rgba(212,176,111,0.08)",
-              color: "#e9cc95",
-              padding: "7px 12px",
-              fontSize: "11px",
-              letterSpacing: "0.9px",
-              textTransform: "uppercase",
-              fontWeight: 700,
-            }}
-          >
-            AI-assisted security triage platform
-          </div>
+      <div
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: "30px",
+          border: `1px solid ${THEME.lineStrong}`,
+          padding: "28px",
+          background: "linear-gradient(180deg, rgba(4,8,18,0.82), rgba(3,7,16,0.94))",
+          boxShadow: `0 0 0 1px ${THEME.line}, 0 40px 100px rgba(0,0,0,0.28)`,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `linear-gradient(180deg, rgba(4,8,18,0.64), rgba(4,8,18,0.88)), url(${THEME.heroImage})`,
+            backgroundSize: "150%",
+            backgroundPosition: "75% center",
+            opacity: 0.82,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "radial-gradient(circle at 72% 28%, rgba(255,255,255,0.12), transparent 16%), radial-gradient(circle at 80% 66%, rgba(198,143,152,0.12), transparent 18%)",
+          }}
+        />
 
-          <h1
-            style={{
-              margin: "18px 0 0",
-              fontSize: "54px",
-              lineHeight: 1.02,
-              color: "#f8fbff",
-              fontWeight: 800,
-              fontFamily: "'Space Grotesk', sans-serif",
-              maxWidth: "760px",
-            }}
-          >
-            Standardize high-volume security triage before alerts become operational risk.
-          </h1>
-
-          <p style={{ margin: "18px 0 0", maxWidth: "720px", color: "rgba(229,237,247,0.74)", fontSize: "16px", lineHeight: 1.9 }}>
-            ThreatWatch AI는 기존 SOC triage의 병목을 해결하기 위해 enrichment, LLM summary, rule-based scoring, manager approval, audit logging을 하나의 workflow layer로 묶습니다.
-            홈페이지는 문제 정의와 솔루션 구조를 먼저 보여주고, 그 아래에서 실제 제품이 케이스를 어떻게 처리하는지 확인할 수 있게 구성합니다.
-          </p>
-
-          <div style={{ display: "flex", gap: "12px", marginTop: "22px", flexWrap: "wrap" }}>
-            <a
-              href="#simulator"
+        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(320px, 0.85fr)", gap: "18px", alignItems: "stretch" }}>
+          <div style={{ display: "grid", gap: "18px", alignContent: "start" }}>
+            <div
               style={{
-                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
                 borderRadius: "999px",
-                border: "1px solid rgba(142,167,255,0.35)",
-                background: "linear-gradient(135deg, rgba(142,167,255,0.18), rgba(212,176,111,0.1))",
-                color: "#f3f6ff",
-                padding: "12px 18px",
-                fontSize: "13px",
-                fontWeight: 700,
-              }}
-            >
-              Explore the Product
-            </a>
-            <a
-              href="#process"
-              style={{
-                textDecoration: "none",
-                borderRadius: "999px",
-                border: "1px solid rgba(255,255,255,0.12)",
+                border: `1px solid ${THEME.lineStrong}`,
                 background: "rgba(255,255,255,0.03)",
-                color: "rgba(255,255,255,0.82)",
-                padding: "12px 18px",
-                fontSize: "13px",
+                color: THEME.text,
+                padding: "8px 14px",
+                fontSize: "11px",
+                letterSpacing: "1.8px",
+                textTransform: "uppercase",
                 fontWeight: 700,
+                fontFamily: DISPLAY_FONT,
+                width: "fit-content",
               }}
             >
-              See the Workflow
-            </a>
+              ThreatWatch AI // Security Workflow
+            </div>
+
+            <div
+              style={{
+                border: `1px solid ${THEME.line}`,
+                background: "rgba(4,8,18,0.28)",
+                padding: "22px 24px",
+                boxShadow: `inset 0 0 34px rgba(255,255,255,0.04), 0 0 28px rgba(255,255,255,0.05)`,
+              }}
+            >
+              <div style={{ color: THEME.textMuted, fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", fontFamily: DISPLAY_FONT, marginBottom: "12px" }}>Autonomous Triage Layer</div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: "clamp(44px, 8vw, 86px)",
+                  lineHeight: 0.95,
+                  color: THEME.text,
+                  fontWeight: 800,
+                  fontFamily: DISPLAY_FONT,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  textShadow: "0 0 16px rgba(255,255,255,0.8), 0 0 42px rgba(154,182,234,0.22)",
+                }}
+              >
+                Security Triage
+              </h1>
+            </div>
+
+            <p style={{ margin: 0, maxWidth: "720px", color: THEME.textSoft, fontSize: "16px", lineHeight: 1.9, fontFamily: BODY_FONT }}>
+              ThreatWatch AI는 enrichment, LLM summary, rule-based scoring, manager approval, audit logging을 하나의 workflow layer로 묶어 대규모 보안 운영을 더 선명하고 일관되게 만듭니다.
+            </p>
+
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              <a
+                href="#simulator"
+                style={{
+                  textDecoration: "none",
+                  borderRadius: "999px",
+                  border: `1px solid ${THEME.lineStrong}`,
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(154,182,234,0.18))",
+                  color: THEME.text,
+                  padding: "12px 18px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  fontFamily: DISPLAY_FONT,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  boxShadow: `0 0 24px rgba(255,255,255,0.08)`,
+                }}
+              >
+                Explore the Product
+              </a>
+              <a
+                href="#process"
+                style={{
+                  textDecoration: "none",
+                  borderRadius: "999px",
+                  border: `1px solid ${THEME.line}`,
+                  background: "rgba(255,255,255,0.03)",
+                  color: THEME.textSoft,
+                  padding: "12px 18px",
+                  fontSize: "13px",
+                  fontWeight: 700,
+                  fontFamily: DISPLAY_FONT,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                }}
+              >
+                See the Workflow
+              </a>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+              {HERO_METRICS.map((item) => (
+                <MetricCard key={item.label} label={item.label} value={`${item.value}\n${item.note}`} accent={THEME.line} />
+              ))}
+            </div>
+
+            <TrustBand />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", marginTop: "22px" }}>
-            {HERO_METRICS.map((item) => (
-              <MetricCard key={item.label} label={item.label} value={`${item.value}\n${item.note}`} accent="rgba(255,255,255,0.08)" />
-            ))}
-          </div>
-
-          <TrustBand />
-        </SectionPanel>
-
-        <HeroProductPreview mode={mode} status={status} lastRunMeta={lastRunMeta} />
+          <HeroProductPreview mode={mode} status={status} lastRunMeta={lastRunMeta} />
+        </div>
       </div>
     </section>
   );
@@ -751,7 +839,7 @@ function SolutionSection() {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: "#f7f8fd", fontSize: "15px", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{item.title}</div>
+                <div style={{ color: THEME.text, fontSize: "15px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.title}</div>
                 <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.7 }}>{item.text}</div>
               </div>
             ))}
@@ -772,7 +860,7 @@ function SolutionSection() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
                   <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.8px" }}>{item.label}</div>
-                  <div style={{ color: "#f0d39b", fontSize: "16px", fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif" }}>{item.value}</div>
+                  <div style={{ color: THEME.text, fontSize: "16px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em" }}>{item.value}</div>
                 </div>
                 <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.7 }}>{item.note}</div>
               </div>
@@ -862,7 +950,7 @@ function ProcessSection({ activeNode, status }) {
                     <div style={{ fontSize: "10px", color: state === "idle" ? lane.accent : "#ffffff", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 700 }}>
                       {state === "active" ? "Active step" : state === "done" ? "Completed" : state === "error" ? "Needs attention" : "Process step"}
                     </div>
-                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1.2 }}>
+                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.2, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                       {step.title}
                     </div>
                     <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.68)", fontSize: "13px", lineHeight: 1.75 }}>{step.detail}</div>
@@ -886,7 +974,7 @@ function ProcessSection({ activeNode, status }) {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: "#f8fbff", fontWeight: 700, fontSize: "13px", fontFamily: "'Space Grotesk', sans-serif" }}>{item.node}</div>
+                <div style={{ color: THEME.text, fontWeight: 700, fontSize: "13px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.node}</div>
                 <div style={{ marginTop: "6px", color: "rgba(255,255,255,0.7)", fontSize: "12px", lineHeight: 1.6 }}>{item.meaning}</div>
                 <div style={{ marginTop: "8px", color: "rgba(133, 197, 255, 0.85)", fontSize: "11px" }}>{item.stage}</div>
               </div>
@@ -1003,7 +1091,7 @@ function ScenarioCard({ scenario, active, disabled, onClick }) {
         </span>
         <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.28)" }}>weight {scenario.weight}</span>
       </div>
-      <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.86)", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{scenario.label}</div>
+      <div style={{ fontSize: "14px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{scenario.label}</div>
       <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.34)", marginTop: "5px" }}>{scenario.input?.incident_type}</div>
       <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.56)", marginTop: "10px", lineHeight: 1.7 }}>{scenario.description}</div>
     </button>
@@ -1034,7 +1122,7 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta }) {
             >
               {currentRisk}
             </span>
-            <span style={{ color: "rgba(255,255,255,0.9)", fontSize: "20px", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{scenario.label}</span>
+            <span style={{ color: THEME.text, fontSize: "20px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{scenario.label}</span>
           </div>
           <div style={{ color: "rgba(255,255,255,0.64)", fontSize: "12px", lineHeight: 1.8 }}>{scenario.description}</div>
         </div>
@@ -1124,13 +1212,13 @@ function ResultCard({ result }) {
               padding: "10px 18px",
               fontSize: "22px",
               fontWeight: 800,
-              fontFamily: "'Space Grotesk', sans-serif",
+              fontFamily: DISPLAY_FONT,
             }}
           >
             {payload.risk_level}
           </div>
           <div>
-            <div style={{ fontSize: "18px", color: "#fff", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>Case Decision Output</div>
+            <div style={{ fontSize: "18px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>Case Decision Output</div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.48)", marginTop: "4px" }}>
               {result.scenario_label} · {sourceLabel}
             </div>
@@ -1361,7 +1449,7 @@ function MissionControlPanel({
                 textAlign: "left",
               }}
             >
-              <div style={{ fontWeight: 700, fontSize: "12px", fontFamily: "'Space Grotesk', sans-serif" }}>{MODE_COPY[option].label}</div>
+              <div style={{ fontWeight: 700, fontSize: "12px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{MODE_COPY[option].label}</div>
               <div style={{ marginTop: "4px", fontSize: "10px", lineHeight: 1.6 }}>{MODE_COPY[option].subtitle}</div>
             </button>
           );
@@ -1641,7 +1729,7 @@ function AuditSection({ result, history, lastRunMeta }) {
                     fontSize: "11px",
                     lineHeight: 1.7,
                     color: "#a7c7ff",
-                    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                    fontFamily: MONO_FONT,
                   }}
                 >
                   {JSON.stringify(result.final_payload, null, 2)}
@@ -1742,7 +1830,7 @@ function CustomersSection() {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: "#f7f8fd", fontSize: "13px", fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{item.title}</div>
+                <div style={{ color: THEME.text, fontSize: "13px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.title}</div>
                 <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.68)", fontSize: "12px", lineHeight: 1.7 }}>{item.text}</div>
               </div>
             ))}
@@ -2050,14 +2138,13 @@ export default function ThreatWatchDashboard() {
     <div
       style={{
         minHeight: "100vh",
-        background:
-          "radial-gradient(circle at top left, rgba(142,167,255,0.14), transparent 24%), radial-gradient(circle at top right, rgba(212,176,111,0.08), transparent 28%), linear-gradient(180deg, #081019 0%, #0b1320 45%, #081019 100%)",
-        color: "#e2e8f0",
-        fontFamily: "'Manrope', sans-serif",
+        background: `linear-gradient(180deg, ${THEME.bgDeep} 0%, ${THEME.bg} 48%, ${THEME.bgDeep} 100%)`,
+        color: THEME.text,
+        fontFamily: BODY_FONT,
       }}
     >
       <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800;900&display=swap"
         rel="stylesheet"
       />
 
@@ -2065,7 +2152,21 @@ export default function ThreatWatchDashboard() {
         style={{
           position: "fixed",
           inset: 0,
-          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(142,167,255,0.008) 2px, rgba(142,167,255,0.008) 4px)",
+          backgroundImage: `linear-gradient(180deg, rgba(3,7,16,0.66), rgba(3,7,16,0.92)), url(${THEME.heroImage})`,
+          backgroundSize: "165%",
+          backgroundPosition: "78% 16%",
+          opacity: 0.18,
+          transform: "scale(1.05)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
+
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(154,182,234,0.008) 2px, rgba(154,182,234,0.008) 4px)",
           pointerEvents: "none",
           zIndex: 0,
         }}
