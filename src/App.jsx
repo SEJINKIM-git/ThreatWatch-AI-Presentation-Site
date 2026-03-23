@@ -33,12 +33,17 @@ const THEME = {
   accentCoral: "#c68f98",
   accentCoralSoft: "rgba(198, 143, 152, 0.12)",
   accentGlow: "rgba(238, 245, 255, 0.5)",
-  heroImage: "/security-design-hero.png",
 };
 
-const DISPLAY_FONT = "'Orbitron', sans-serif";
-const BODY_FONT = "'Exo 2', sans-serif";
+const DISPLAY_FONT = "'Orbitron', 'Noto Sans KR', sans-serif";
+const BODY_FONT = "'Noto Sans KR', 'Exo 2', sans-serif";
 const MONO_FONT = "'IBM Plex Mono', monospace";
+const WRAP_ANYWHERE = {
+  minWidth: 0,
+  wordBreak: "break-word",
+  overflowWrap: "anywhere",
+  hyphens: "auto",
+};
 
 const MODE_COPY = {
   demo: {
@@ -329,7 +334,7 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
         >
           {title}
         </h2>
-        <p style={{ margin: "12px 0 0", color: THEME.textSoft, fontSize: "15px", lineHeight: 1.8, fontFamily: BODY_FONT }}>{description}</p>
+        <p style={{ margin: "12px 0 0", color: THEME.textSoft, fontSize: "15px", lineHeight: 1.8, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{description}</p>
       </div>
       {action ? <div>{action}</div> : null}
     </div>
@@ -361,7 +366,7 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
         >
           {title}
         </div>
-        {subtitle ? <div style={{ marginTop: "6px", color: THEME.textSoft, fontSize: "12px", lineHeight: 1.7, fontFamily: BODY_FONT }}>{subtitle}</div> : null}
+        {subtitle ? <div style={{ marginTop: "6px", color: THEME.textSoft, fontSize: "12px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{subtitle}</div> : null}
       </div>
       {children}
     </div>
@@ -427,7 +432,7 @@ function HeroProductPreview({ mode, status, lastRunMeta }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.15fr 0.85fr", gap: "12px", marginTop: "18px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginTop: "18px" }}>
         <div
           style={{
             borderRadius: "18px",
@@ -479,7 +484,7 @@ function MetricCard({ label, value, accent }) {
       }}
     >
       <div style={{ fontSize: "10px", color: THEME.textMuted, textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: "6px", fontFamily: DISPLAY_FONT }}>{label}</div>
-      <div style={{ fontSize: "13px", color: THEME.text, fontWeight: 600, lineHeight: 1.55, whiteSpace: "pre-line", fontFamily: BODY_FONT }}>{value}</div>
+      <div style={{ fontSize: "13px", color: THEME.text, fontWeight: 600, lineHeight: 1.55, whiteSpace: "pre-line", fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{value}</div>
     </div>
   );
 }
@@ -517,8 +522,8 @@ function NoticeBanner({ kind, text }) {
         border: `1px solid ${palette.border}`,
       }}
     >
-      <div style={{ fontSize: "11px", color: palette.text, fontWeight: 700, marginBottom: "4px", letterSpacing: "0.5px" }}>{kind === "warning" ? "WARNING" : "ERROR"}</div>
-      <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", lineHeight: 1.7 }}>{text}</div>
+      <div style={{ fontSize: "11px", color: palette.text, fontWeight: 700, marginBottom: "4px", letterSpacing: "0.5px", fontFamily: DISPLAY_FONT }}>{kind === "warning" ? "WARNING" : "ERROR"}</div>
+      <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.8)", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{text}</div>
     </div>
   );
 }
@@ -623,29 +628,23 @@ function HeroSection({ mode, status, lastRunMeta }) {
           borderRadius: "30px",
           border: `1px solid ${THEME.lineStrong}`,
           padding: "28px",
-          background: "linear-gradient(180deg, rgba(4,8,18,0.82), rgba(3,7,16,0.94))",
-          boxShadow: `0 0 0 1px ${THEME.line}, 0 40px 100px rgba(0,0,0,0.28)`,
+          background: "linear-gradient(180deg, rgba(5,9,20,0.96), rgba(4,8,18,0.98))",
+          boxShadow: `0 0 0 1px ${THEME.line}, 0 24px 64px rgba(0,0,0,0.22)`,
+          backdropFilter: "blur(12px)",
+          isolation: "isolate",
+          ...WRAP_ANYWHERE,
         }}
       >
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `linear-gradient(180deg, rgba(4,8,18,0.64), rgba(4,8,18,0.88)), url(${THEME.heroImage})`,
-            backgroundSize: "150%",
-            backgroundPosition: "75% center",
-            opacity: 0.82,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "radial-gradient(circle at 72% 28%, rgba(255,255,255,0.12), transparent 16%), radial-gradient(circle at 80% 66%, rgba(198,143,152,0.12), transparent 18%)",
+            background: "linear-gradient(180deg, rgba(154,182,234,0.02), transparent 24%, transparent 100%)",
+            pointerEvents: "none",
           }}
         />
 
-        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(320px, 0.85fr)", gap: "18px", alignItems: "stretch" }}>
+        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "18px", alignItems: "stretch" }}>
           <div style={{ display: "grid", gap: "18px", alignContent: "start" }}>
             <div
               style={{
@@ -663,6 +662,8 @@ function HeroSection({ mode, status, lastRunMeta }) {
                 fontWeight: 700,
                 fontFamily: DISPLAY_FONT,
                 width: "fit-content",
+                maxWidth: "100%",
+                ...WRAP_ANYWHERE,
               }}
             >
               ThreatWatch AI // Security Workflow
@@ -681,20 +682,21 @@ function HeroSection({ mode, status, lastRunMeta }) {
                 style={{
                   margin: 0,
                   fontSize: "clamp(44px, 8vw, 86px)",
-                  lineHeight: 0.95,
+                  lineHeight: 1.02,
                   color: THEME.text,
                   fontWeight: 800,
                   fontFamily: DISPLAY_FONT,
-                  letterSpacing: "0.08em",
+                  letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  textShadow: "0 0 16px rgba(255,255,255,0.8), 0 0 42px rgba(154,182,234,0.22)",
+                  textShadow: "0 0 16px rgba(255,255,255,0.28)",
+                  ...WRAP_ANYWHERE,
                 }}
               >
                 Security Triage
               </h1>
             </div>
 
-            <p style={{ margin: 0, maxWidth: "720px", color: THEME.textSoft, fontSize: "16px", lineHeight: 1.9, fontFamily: BODY_FONT }}>
+            <p style={{ margin: 0, maxWidth: "720px", color: THEME.textSoft, fontSize: "16px", lineHeight: 1.9, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>
               ThreatWatch AI는 enrichment, LLM summary, rule-based scoring, manager approval, audit logging을 하나의 workflow layer로 묶어 대규모 보안 운영을 더 선명하고 일관되게 만듭니다.
             </p>
 
@@ -769,7 +771,7 @@ function ProblemSection() {
             {AS_IS_ISSUES.map((item) => (
               <div key={item} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
                 <div style={{ width: "8px", height: "8px", borderRadius: "999px", background: "#ff6b81", marginTop: "7px", flexShrink: 0 }} />
-                <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8 }}>{item}</div>
+                <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{item}</div>
               </div>
             ))}
           </div>
@@ -787,6 +789,7 @@ function ProblemSection() {
                   border: "1px solid rgba(255,145,0,0.14)",
                   color: "rgba(255,255,255,0.82)",
                   fontSize: "13px",
+                  ...WRAP_ANYWHERE,
                 }}
               >
                 {item}
@@ -798,7 +801,7 @@ function ProblemSection() {
         <SectionPanel title="Operating Principles" subtitle="자동화 이후에도 사람이 사라지지 않는다는 점이 중요합니다." accent="rgba(109,187,155,0.2)">
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             {TO_BE_PROMISES.map((item) => (
-              <div key={item} style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8 }}>
+              <div key={item} style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>
                 {item}
               </div>
             ))}
@@ -821,12 +824,12 @@ function SolutionSection() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "14px" }}>
         {SOLUTION_PILLARS.map((item) => (
           <SectionPanel key={item.title} title={item.title} accent="rgba(133, 197, 255, 0.16)">
-            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8 }}>{item.text}</div>
+            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{item.text}</div>
           </SectionPanel>
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.05fr) minmax(320px, 0.95fr)", gap: "14px", marginTop: "14px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
         <SectionPanel title="Solution Modules" subtitle="실제 SaaS 홈페이지처럼 제품 구조를 capability 중심으로 정리합니다." accent="rgba(142,167,255,0.16)">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
             {PLATFORM_MODULES.map((item) => (
@@ -839,8 +842,8 @@ function SolutionSection() {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: THEME.text, fontSize: "15px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.title}</div>
-                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.7 }}>{item.text}</div>
+                <div style={{ color: THEME.text, fontSize: "15px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.title}</div>
+                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{item.text}</div>
               </div>
             ))}
           </div>
@@ -859,10 +862,10 @@ function SolutionSection() {
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
-                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.8px" }}>{item.label}</div>
-                  <div style={{ color: THEME.text, fontSize: "16px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em" }}>{item.value}</div>
+                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.8px", ...WRAP_ANYWHERE }}>{item.label}</div>
+                  <div style={{ color: THEME.text, fontSize: "16px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", ...WRAP_ANYWHERE }}>{item.value}</div>
                 </div>
-                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.7 }}>{item.note}</div>
+                <div style={{ marginTop: "8px", color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{item.note}</div>
               </div>
             ))}
           </div>
@@ -950,10 +953,10 @@ function ProcessSection({ activeNode, status }) {
                     <div style={{ fontSize: "10px", color: state === "idle" ? lane.accent : "#ffffff", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 700 }}>
                       {state === "active" ? "Active step" : state === "done" ? "Completed" : state === "error" ? "Needs attention" : "Process step"}
                     </div>
-                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.2, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.2, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>
                       {step.title}
                     </div>
-                    <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.68)", fontSize: "13px", lineHeight: 1.75 }}>{step.detail}</div>
+                    <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.68)", fontSize: "13px", lineHeight: 1.75, ...WRAP_ANYWHERE }}>{step.detail}</div>
                   </div>
                 );
               })}
@@ -974,9 +977,9 @@ function ProcessSection({ activeNode, status }) {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: THEME.text, fontWeight: 700, fontSize: "13px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.node}</div>
-                <div style={{ marginTop: "6px", color: "rgba(255,255,255,0.7)", fontSize: "12px", lineHeight: 1.6 }}>{item.meaning}</div>
-                <div style={{ marginTop: "8px", color: "rgba(133, 197, 255, 0.85)", fontSize: "11px" }}>{item.stage}</div>
+                <div style={{ color: THEME.text, fontWeight: 700, fontSize: "13px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.node}</div>
+                <div style={{ marginTop: "6px", color: "rgba(255,255,255,0.7)", fontSize: "12px", lineHeight: 1.6, ...WRAP_ANYWHERE }}>{item.meaning}</div>
+                <div style={{ marginTop: "8px", color: "rgba(133, 197, 255, 0.85)", fontSize: "11px", ...WRAP_ANYWHERE }}>{item.stage}</div>
               </div>
             ))}
           </div>
@@ -1091,9 +1094,9 @@ function ScenarioCard({ scenario, active, disabled, onClick }) {
         </span>
         <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.28)" }}>weight {scenario.weight}</span>
       </div>
-      <div style={{ fontSize: "14px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{scenario.label}</div>
-      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.34)", marginTop: "5px" }}>{scenario.input?.incident_type}</div>
-      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.56)", marginTop: "10px", lineHeight: 1.7 }}>{scenario.description}</div>
+      <div style={{ fontSize: "14px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{scenario.label}</div>
+      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.34)", marginTop: "5px", ...WRAP_ANYWHERE }}>{scenario.input?.incident_type}</div>
+      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.56)", marginTop: "10px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{scenario.description}</div>
     </button>
   );
 }
@@ -1107,7 +1110,7 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta }) {
   return (
     <SectionPanel title="Case Briefing" subtitle="선택된 incident의 기대 경로와 주요 신호를 빠르게 확인할 수 있습니다." accent={`${riskMeta.border}44`}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "14px", flexWrap: "wrap" }}>
-        <div>
+        <div style={{ flex: "1 1 320px", minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px", flexWrap: "wrap" }}>
             <span
               style={{
@@ -1122,13 +1125,15 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta }) {
             >
               {currentRisk}
             </span>
-            <span style={{ color: THEME.text, fontSize: "20px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{scenario.label}</span>
+            <span style={{ color: THEME.text, fontSize: "20px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{scenario.label}</span>
           </div>
-          <div style={{ color: "rgba(255,255,255,0.64)", fontSize: "12px", lineHeight: 1.8 }}>{scenario.description}</div>
+          <div style={{ color: "rgba(255,255,255,0.64)", fontSize: "12px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{scenario.description}</div>
         </div>
         <div
           style={{
-            minWidth: "180px",
+            flex: "1 1 220px",
+            minWidth: 0,
+            maxWidth: "320px",
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.06)",
             borderRadius: "14px",
@@ -1136,7 +1141,7 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta }) {
           }}
         >
           <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px" }}>Run Snapshot</div>
-          <div style={{ marginTop: "8px", fontSize: "12px", color: "rgba(255,255,255,0.82)", lineHeight: 1.7 }}>
+          <div style={{ marginTop: "8px", fontSize: "12px", color: "rgba(255,255,255,0.82)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
             <div>Mode: {MODE_COPY[mode].label}</div>
             <div>Seed: {seed || "Auto generated"}</div>
             <div>Last source: {lastRunMeta?.source || "Not run yet"}</div>
@@ -1219,7 +1224,7 @@ function ResultCard({ result }) {
           </div>
           <div>
             <div style={{ fontSize: "18px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>Case Decision Output</div>
-            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.48)", marginTop: "4px" }}>
+            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.48)", marginTop: "4px", ...WRAP_ANYWHERE }}>
               {result.scenario_label} · {sourceLabel}
             </div>
           </div>
@@ -1234,6 +1239,8 @@ function ResultCard({ result }) {
               color: "rgba(255,255,255,0.78)",
               background: "rgba(255,255,255,0.05)",
               border: "1px solid rgba(255,255,255,0.08)",
+              maxWidth: "100%",
+              ...WRAP_ANYWHERE,
             }}
           >
             Seed {result.seed || "n/a"}
@@ -1247,6 +1254,8 @@ function ResultCard({ result }) {
               color: riskMeta.text,
               background: riskMeta.bg,
               border: `1px solid ${riskMeta.border}55`,
+              maxWidth: "100%",
+              ...WRAP_ANYWHERE,
             }}
           >
             {result.expected_route || "Route pending"}
@@ -1261,6 +1270,8 @@ function ResultCard({ result }) {
                 color: deliveryTone.text,
                 background: deliveryTone.bg,
                 border: `1px solid ${deliveryTone.border}`,
+                maxWidth: "100%",
+                ...WRAP_ANYWHERE,
               }}
             >
               {delivery.status === "sent" ? "Email delivered" : delivery.status === "not_sent" ? "Email not sent" : "Email preview"}
@@ -1269,7 +1280,7 @@ function ResultCard({ result }) {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "10px", marginBottom: "18px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "10px", marginBottom: "18px" }}>
         <MetricCard label="Alert ID" value={payload.alert_id || "—"} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="Incident Type" value={payload.incident_type || "—"} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="Risk Score" value={payload.risk_score ? `${payload.risk_score}/100` : "N/A"} accent={`${riskMeta.border}45`} />
@@ -1290,7 +1301,7 @@ function ResultCard({ result }) {
           }}
         >
           <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Inbox Delivery Status</div>
-          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.82)", lineHeight: 1.8 }}>{delivery.message}</div>
+          <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.82)", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{delivery.message}</div>
         </div>
       ) : null}
 
@@ -1304,7 +1315,7 @@ function ResultCard({ result }) {
         }}
       >
         <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Executive Summary</div>
-        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.84)", lineHeight: 1.8 }}>{payload.summary}</div>
+        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.84)", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{payload.summary}</div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
@@ -1319,7 +1330,7 @@ function ResultCard({ result }) {
           <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Why It Matters</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {(aiResult.rationale || []).map((item) => (
-              <div key={item} style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", lineHeight: 1.7 }}>
+              <div key={item} style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
                 {item}
               </div>
             ))}
@@ -1336,7 +1347,7 @@ function ResultCard({ result }) {
           <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>Recommended Actions</div>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {(aiResult.recommended_actions || []).map((item) => (
-              <div key={item} style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", lineHeight: 1.7 }}>
+              <div key={item} style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
                 {item}
               </div>
             ))}
@@ -1371,7 +1382,7 @@ function HistoryPanel({ history, onReplay }) {
                 padding: "12px 14px",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", minWidth: 0 }}>
                 <span
                   style={{
                     minWidth: "34px",
@@ -1387,13 +1398,13 @@ function HistoryPanel({ history, onReplay }) {
                 >
                   {payload.risk_level || item.status}
                 </span>
-                <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.74)" }}>{item.scenarioLabel}</span>
-                <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)" }}>seed {item.seed}</span>
+                <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.74)", ...WRAP_ANYWHERE }}>{item.scenarioLabel}</span>
+                <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", ...WRAP_ANYWHERE }}>seed {item.seed}</span>
                 <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.24)" }}>
                   {item.duration ? `${(item.duration / 1000).toFixed(1)}s` : "—"} · {item.source}
                 </span>
                 {item.result?.delivery?.recipient ? (
-                  <span style={{ fontSize: "11px", color: "rgba(133, 197, 255, 0.82)" }}>email {item.result.delivery.recipient}</span>
+                  <span style={{ fontSize: "11px", color: "rgba(133, 197, 255, 0.82)", ...WRAP_ANYWHERE }}>email {item.result.delivery.recipient}</span>
                 ) : null}
               </div>
               <button
@@ -1432,7 +1443,7 @@ function MissionControlPanel({
 }) {
   return (
     <SectionPanel title="Workspace Controls" subtitle="mode 전환, replay, seed control, continuous run을 하나의 운영 패널에서 관리합니다.">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "8px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "8px" }}>
         {["demo", "live"].map((option) => {
           const active = mode === option;
           return (
@@ -1450,7 +1461,7 @@ function MissionControlPanel({
               }}
             >
               <div style={{ fontWeight: 700, fontSize: "12px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{MODE_COPY[option].label}</div>
-              <div style={{ marginTop: "4px", fontSize: "10px", lineHeight: 1.6 }}>{MODE_COPY[option].subtitle}</div>
+              <div style={{ marginTop: "4px", fontSize: "10px", lineHeight: 1.6, ...WRAP_ANYWHERE }}>{MODE_COPY[option].subtitle}</div>
             </button>
           );
         })}
@@ -1536,9 +1547,10 @@ function MissionControlPanel({
             padding: "12px 14px",
             fontSize: "12px",
             outline: "none",
+            fontFamily: BODY_FONT,
           }}
         />
-        <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.38)", lineHeight: 1.6 }}>
+        <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.38)", lineHeight: 1.6, ...WRAP_ANYWHERE }}>
           같은 seed를 다시 넣고 실행하면 QA, 내부 검토, 고객 검증 과정에서도 동일한 case를 그대로 재현할 수 있습니다.
         </div>
       </div>
@@ -1574,7 +1586,7 @@ function InboxDeliveryPanel({
 
   return (
     <SectionPanel title="Inbox Delivery" subtitle="선택한 incident를 체험자의 실제 이메일 inbox로 보내는 체험 패널입니다." accent="rgba(109,187,155,0.18)">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "14px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", marginBottom: "14px" }}>
         <MetricCard label="Selected Case" value={selectedScenario?.label || "Select a template"} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="Delivery Path" value={webhookReady ? "n8n Email Workflow" : "Webhook required"} accent="rgba(142,167,255,0.25)" />
         <MetricCard label="Last Delivery" value={delivery?.recipient || "No email sent yet"} accent="rgba(255,255,255,0.08)" />
@@ -1595,10 +1607,11 @@ function InboxDeliveryPanel({
           padding: "12px 14px",
           fontSize: "12px",
           outline: "none",
+          fontFamily: BODY_FONT,
         }}
       />
 
-      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(255,255,255,0.46)", lineHeight: 1.7 }}>{helperText}</div>
+      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(255,255,255,0.46)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{helperText}</div>
 
       <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap" }}>
         <button
@@ -1636,6 +1649,7 @@ function InboxDeliveryPanel({
               color: "rgba(255,255,255,0.76)",
               fontSize: "12px",
               lineHeight: 1.7,
+              ...WRAP_ANYWHERE,
             }}
           >
             {item}
@@ -1649,7 +1663,7 @@ function InboxDeliveryPanel({
 function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoading, scenariosCount, lastRunMeta }) {
   return (
     <SectionPanel title="Integration Bridge" subtitle="Scenario Mode로 기본 동작을 검증하고, Connected Workflow로 n8n과 연동합니다.">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "10px", marginBottom: "14px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", marginBottom: "14px" }}>
         <MetricCard label="Scenario Pool" value={scenariosLoading ? "Loading..." : `${scenariosCount} scenarios`} accent="rgba(255,255,255,0.08)" />
         <MetricCard label="Current Mode" value={MODE_COPY[mode].label} accent="rgba(142,167,255,0.25)" />
         <MetricCard label="Last Seed" value={lastRunMeta?.seed || "Not run yet"} accent="rgba(255,255,255,0.08)" />
@@ -1670,12 +1684,13 @@ function DeploymentBridgePanel({ mode, webhookUrl, setWebhookUrl, scenariosLoadi
           padding: "12px 14px",
           fontSize: "12px",
           outline: "none",
+          fontFamily: BODY_FONT,
         }}
       />
-      <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.42)", lineHeight: 1.7 }}>
+      <div style={{ marginTop: "8px", fontSize: "11px", color: "rgba(255,255,255,0.42)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
         Scenario Mode에서는 URL 없이도 제품의 기본 동작을 검증할 수 있습니다. Connected Workflow에서는 Webhook을 호출하고, 실패하면 같은 시나리오의 deterministic fallback을 보여줍니다.
       </div>
-      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(133, 197, 255, 0.82)", lineHeight: 1.7 }}>
+      <div style={{ marginTop: "10px", fontSize: "11px", color: "rgba(133, 197, 255, 0.82)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
         메일 체험을 연결하려면 n8n 메일 노드의 recipient를 `notification_email` 필드에 매핑해 주세요.
       </div>
     </SectionPanel>
@@ -1701,11 +1716,11 @@ function AuditSection({ result, history, lastRunMeta }) {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(320px, 0.85fr)", gap: "14px", marginTop: "14px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
         <SectionPanel title="Current Audit Snapshot" subtitle="현재 실행 결과를 audit-friendly 형태로 재확인합니다." accent="rgba(109,187,155,0.16)">
           {result ? (
             <>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "10px", marginBottom: "14px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", marginBottom: "14px" }}>
                 <MetricCard label="Route" value={result.expected_route || "—"} accent="rgba(255,255,255,0.08)" />
                 <MetricCard label="Risk Level" value={payload?.risk_level || "—"} accent="rgba(255,255,255,0.08)" />
                 <MetricCard label="Risk Score" value={payload?.risk_score ? `${payload.risk_score}/100` : "—"} accent="rgba(255,255,255,0.08)" />
@@ -1785,12 +1800,12 @@ function CustomersSection() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "14px" }}>
         {CUSTOMER_SEGMENTS.map((segment) => (
           <SectionPanel key={segment.title} title={segment.title} accent="rgba(133, 197, 255, 0.16)">
-            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8 }}>{segment.text}</div>
+            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{segment.text}</div>
           </SectionPanel>
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(320px, 0.9fr)", gap: "14px", marginTop: "14px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
         <SectionPanel title="Adoption Signals" subtitle="이런 운영 조건을 가진 팀일수록 제품 적합도가 높습니다." accent="rgba(109,187,155,0.16)">
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {CUSTOMER_SIGNALS.map((item, index) => (
@@ -1812,7 +1827,7 @@ function CustomersSection() {
                 >
                   {index + 1}
                 </div>
-                <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8 }}>{item}</div>
+                <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{item}</div>
               </div>
             ))}
           </div>
@@ -1830,8 +1845,8 @@ function CustomersSection() {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: THEME.text, fontSize: "13px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{item.title}</div>
-                <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.68)", fontSize: "12px", lineHeight: 1.7 }}>{item.text}</div>
+                <div style={{ color: THEME.text, fontSize: "13px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.title}</div>
+                <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.68)", fontSize: "12px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{item.text}</div>
               </div>
             ))}
           </div>
@@ -2031,7 +2046,8 @@ export default function ThreatWatchDashboard() {
       const duration = stopClock(startedAt);
       setResult(nextResult);
       setStatus("done");
-      setLastRunMeta({ scenarioId: scenario.id, seed, source: nextResult.source, recipientEmail: normalizedRecipient });
+      const workflowMode = useLiveWorkflow ? "live" : "demo";
+      setLastRunMeta({ scenarioId: scenario.id, seed, source: nextResult.source, recipientEmail: normalizedRecipient, workflowMode });
       setHistory((previous) =>
         [
           {
@@ -2039,6 +2055,8 @@ export default function ThreatWatchDashboard() {
             scenarioLabel: scenario.label,
             seed,
             source: nextResult.source,
+            workflowMode,
+            recipientEmail: normalizedRecipient,
             result: nextResult,
             duration,
             time: new Date().toLocaleTimeString(),
@@ -2057,6 +2075,8 @@ export default function ThreatWatchDashboard() {
             scenarioLabel: scenario.label,
             seed,
             source: mode,
+            workflowMode: useLiveWorkflow ? "live" : "demo",
+            recipientEmail: normalizedRecipient,
             status: "error",
             duration: 0,
             time: new Date().toLocaleTimeString(),
@@ -2100,8 +2120,13 @@ export default function ThreatWatchDashboard() {
     if (!item) return;
     const replayScenario = resolveScenarioById(scenarios, item.scenarioId);
     if (!replayScenario) return;
+    const replayRecipient = item.recipientEmail || item.result?.delivery?.recipient || "";
+    const replayMode = item.workflowMode || (item.source === "live" || item.source === "demo_fallback" ? "live" : "demo");
+    if (mode !== replayMode) {
+      setMode(replayMode);
+    }
     setSeedInput(item.seed);
-    runScenario(replayScenario, item.seed, { recipientEmail: item.recipientEmail || "" });
+    runScenario(replayScenario, item.seed, { recipientEmail: replayRecipient, forceLive: replayMode === "live" });
   };
 
   const handleSendEmail = () => {
@@ -2144,33 +2169,15 @@ export default function ThreatWatchDashboard() {
       }}
     >
       <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Orbitron:wght@600;700;800;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700;800&family=Orbitron:wght@600;700;800;900&display=swap"
         rel="stylesheet"
       />
-
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          backgroundImage: `linear-gradient(180deg, rgba(3,7,16,0.66), rgba(3,7,16,0.92)), url(${THEME.heroImage})`,
-          backgroundSize: "165%",
-          backgroundPosition: "78% 16%",
-          opacity: 0.18,
-          transform: "scale(1.05)",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      />
-
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(154,182,234,0.008) 2px, rgba(154,182,234,0.008) 4px)",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      />
+      <style>{`
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; background: ${THEME.bgDeep}; color: ${THEME.text}; font-family: ${BODY_FONT}; }
+        input, textarea, button { font: inherit; }
+      `}</style>
 
       <TopNav mode={mode} status={status} />
 
