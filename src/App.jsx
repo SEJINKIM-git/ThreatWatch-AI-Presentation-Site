@@ -341,6 +341,44 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
   );
 }
 
+function PageSection({ id, tint = THEME.lineStrong, children }) {
+  return (
+    <section id={id} style={{ marginTop: "88px", scrollMarginTop: "120px", position: "relative" }}>
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          height: "1px",
+          background: `linear-gradient(90deg, transparent, ${tint}, transparent)`,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: "1px",
+          height: "88px",
+          background: `linear-gradient(180deg, ${tint}, rgba(0,0,0,0))`,
+          opacity: 0.18,
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          paddingTop: "30px",
+        }}
+      >
+        {children}
+      </div>
+    </section>
+  );
+}
+
 function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.07)" }) {
   return (
     <div
@@ -681,14 +719,15 @@ function HeroSection({ mode, status, lastRunMeta }) {
               <h1
                 style={{
                   margin: 0,
-                  fontSize: "clamp(44px, 8vw, 86px)",
+                  fontSize: "clamp(28px, 4.8vw, 60px)",
                   lineHeight: 1.02,
                   color: THEME.text,
                   fontWeight: 800,
                   fontFamily: DISPLAY_FONT,
-                  letterSpacing: "0.04em",
+                  letterSpacing: "0.03em",
                   textTransform: "uppercase",
                   textShadow: "0 0 16px rgba(255,255,255,0.28)",
+                  whiteSpace: "nowrap",
                   ...WRAP_ANYWHERE,
                 }}
               >
@@ -758,7 +797,7 @@ function HeroSection({ mode, status, lastRunMeta }) {
 
 function ProblemSection() {
   return (
-    <section id="problem" style={{ marginTop: "72px" }}>
+    <PageSection id="problem" tint="rgba(226,127,119,0.34)">
       <NarrativeHeader
         eyebrow="Operational Pain"
         title="Manual triage becomes an enterprise risk when volume, regulation, and accountability collide."
@@ -808,13 +847,13 @@ function ProblemSection() {
           </div>
         </SectionPanel>
       </div>
-    </section>
+    </PageSection>
   );
 }
 
 function SolutionSection() {
   return (
-    <section id="solution" style={{ marginTop: "72px" }}>
+    <PageSection id="solution" tint="rgba(142,167,255,0.3)">
       <NarrativeHeader
         eyebrow="Our Solution"
         title="ThreatWatch AI turns the red-box triage bottleneck into a governed workflow layer."
@@ -871,7 +910,7 @@ function SolutionSection() {
           </div>
         </SectionPanel>
       </div>
-    </section>
+    </PageSection>
   );
 }
 
@@ -891,7 +930,7 @@ function getProcessStepState(stepIds, activeNode, status) {
 
 function ProcessSection({ activeNode, status }) {
   return (
-    <section id="process" style={{ marginTop: "72px" }}>
+    <PageSection id="process" tint="rgba(133, 197, 255, 0.28)">
       <NarrativeHeader
         eyebrow="Codified Workflow"
         title="A BPMN-backed operating model for enterprise security teams."
@@ -985,7 +1024,7 @@ function ProcessSection({ activeNode, status }) {
           </div>
         </SectionPanel>
       </div>
-    </section>
+    </PageSection>
   );
 }
 
@@ -1701,7 +1740,7 @@ function AuditSection({ result, history, lastRunMeta }) {
   const payload = result?.final_payload;
 
   return (
-    <section id="audit" style={{ marginTop: "72px" }}>
+    <PageSection id="audit" tint="rgba(109,187,155,0.28)">
       <NarrativeHeader
         eyebrow="Governance Layer"
         title="The interface should make trust, evidence, and control visible."
@@ -1784,13 +1823,13 @@ function AuditSection({ result, history, lastRunMeta }) {
           </div>
         </SectionPanel>
       </div>
-    </section>
+    </PageSection>
   );
 }
 
 function CustomersSection() {
   return (
-    <section id="customers" style={{ marginTop: "72px" }}>
+    <PageSection id="customers" tint="rgba(154,182,234,0.28)">
       <NarrativeHeader
         eyebrow="Expected Customers"
         title="Built for organizations where triage quality, speed, and accountability matter together."
@@ -1852,7 +1891,7 @@ function CustomersSection() {
           </div>
         </SectionPanel>
       </div>
-    </section>
+    </PageSection>
   );
 }
 
@@ -2187,7 +2226,7 @@ export default function ThreatWatchDashboard() {
         <SolutionSection />
         <ProcessSection activeNode={activeNode} status={status} />
 
-        <section id="simulator" style={{ marginTop: "72px" }}>
+        <PageSection id="simulator" tint="rgba(198,143,152,0.24)">
           <NarrativeHeader
             eyebrow="Product Workspace"
             title="A working product surface for case triage, routing, and evidence capture."
@@ -2285,7 +2324,7 @@ export default function ThreatWatchDashboard() {
           <div style={{ marginTop: "14px" }}>
             <HistoryPanel history={history} onReplay={handleReplay} />
           </div>
-        </section>
+        </PageSection>
 
         <AuditSection result={result} history={history} lastRunMeta={lastRunMeta} />
         <CustomersSection />
