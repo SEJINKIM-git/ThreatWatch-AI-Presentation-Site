@@ -659,31 +659,31 @@ function TopNav({ mode, status }) {
 function HeroSection({ mode, status, lastRunMeta }) {
   return (
     <section id="overview" style={{ paddingTop: "40px" }}>
-      <div
-        style={{
-          position: "relative",
-          overflow: "hidden",
-          borderRadius: "30px",
-          border: `1px solid ${THEME.lineStrong}`,
-          padding: "28px",
-          background: "linear-gradient(180deg, rgba(5,9,20,0.96), rgba(4,8,18,0.98))",
-          boxShadow: `0 0 0 1px ${THEME.line}, 0 24px 64px rgba(0,0,0,0.22)`,
-          backdropFilter: "blur(12px)",
-          isolation: "isolate",
-          ...WRAP_ANYWHERE,
-        }}
-      >
+      <div style={{ display: "grid", gap: "18px" }}>
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(180deg, rgba(154,182,234,0.02), transparent 24%, transparent 100%)",
-            pointerEvents: "none",
+            position: "relative",
+            overflow: "hidden",
+            borderRadius: "30px",
+            border: `1px solid ${THEME.lineStrong}`,
+            padding: "28px",
+            background: "linear-gradient(180deg, rgba(5,9,20,0.96), rgba(4,8,18,0.98))",
+            boxShadow: `0 0 0 1px ${THEME.line}, 0 24px 64px rgba(0,0,0,0.22)`,
+            backdropFilter: "blur(12px)",
+            isolation: "isolate",
+            ...WRAP_ANYWHERE,
           }}
-        />
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(180deg, rgba(154,182,234,0.02), transparent 24%, transparent 100%)",
+              pointerEvents: "none",
+            }}
+          />
 
-        <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "18px", alignItems: "stretch" }}>
-          <div style={{ display: "grid", gap: "18px", alignContent: "start" }}>
+          <div style={{ position: "relative", zIndex: 1, display: "grid", gap: "18px", alignContent: "start" }}>
             <div
               style={{
                 display: "inline-flex",
@@ -719,12 +719,12 @@ function HeroSection({ mode, status, lastRunMeta }) {
               <h1
                 style={{
                   margin: 0,
-                  fontSize: "clamp(28px, 4.8vw, 60px)",
+                  fontSize: "clamp(20px, 4.2vw, 60px)",
                   lineHeight: 1.02,
                   color: THEME.text,
                   fontWeight: 800,
                   fontFamily: DISPLAY_FONT,
-                  letterSpacing: "0.03em",
+                  letterSpacing: "0.02em",
                   textTransform: "uppercase",
                   textShadow: "0 0 16px rgba(255,255,255,0.28)",
                   whiteSpace: "nowrap",
@@ -787,7 +787,30 @@ function HeroSection({ mode, status, lastRunMeta }) {
 
             <TrustBand />
           </div>
+        </div>
 
+        <div
+          style={{
+            borderRadius: "26px",
+            border: `1px solid rgba(154,182,234,0.22)`,
+            background: "linear-gradient(180deg, rgba(5,9,20,0.9), rgba(4,8,18,0.94))",
+            padding: "22px",
+            boxShadow: `0 0 0 1px ${THEME.line}, 0 20px 48px rgba(0,0,0,0.2)`,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "16px" }}>
+            <div>
+              <div style={{ color: THEME.accentBlue, fontSize: "11px", letterSpacing: "1.8px", textTransform: "uppercase", fontWeight: 700, fontFamily: DISPLAY_FONT }}>
+                Workspace Snapshot
+              </div>
+              <div style={{ marginTop: "8px", color: THEME.text, fontSize: "24px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>
+                Command Workspace
+              </div>
+              <div style={{ marginTop: "8px", color: THEME.textSoft, fontSize: "13px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>
+                Overview 영역과 실제 제품 워크스페이스를 분리해, 히어로 메시지와 인터페이스 미리보기가 서로 겹치지 않도록 구성했습니다.
+              </div>
+            </div>
+          </div>
           <HeroProductPreview mode={mode} status={status} lastRunMeta={lastRunMeta} />
         </div>
       </div>
