@@ -47,6 +47,7 @@ const WRAP_ANYWHERE = {
   overflowWrap: "anywhere",
   hyphens: "auto",
 };
+const BRAND_LOGO = "/threatwatch-logo.svg";
 
 const MODE_COPY = {
   demo: {
@@ -611,24 +612,16 @@ function TopNav({ mode, status }) {
     >
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "18px", flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div
+          <img
+            src={BRAND_LOGO}
+            alt="ThreatWatch AI logo"
             style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "14px",
-              background: "linear-gradient(135deg, rgba(238,245,255,0.96), rgba(154,182,234,0.92))",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#09111f",
-              fontWeight: 900,
-              fontSize: "18px",
-              fontFamily: DISPLAY_FONT,
-              boxShadow: `0 0 18px rgba(255,255,255,0.24)`,
+              height: "46px",
+              width: "auto",
+              display: "block",
+              filter: "drop-shadow(0 0 14px rgba(46,169,242,0.12))",
             }}
-          >
-            T
-          </div>
+          />
           <div>
             <div style={{ color: THEME.accentBlue, fontWeight: 800, fontSize: "18px", fontFamily: DISPLAY_FONT, letterSpacing: "-0.03em" }}>ThreatWatch AI</div>
             <div style={{ color: THEME.textMuted, fontSize: "11px", fontFamily: BODY_FONT }}>Enterprise security workflow intelligence</div>
@@ -715,6 +708,16 @@ function HeroSection({ mode, status, lastRunMeta }) {
           />
 
           <div style={{ position: "relative", zIndex: 1, display: "grid", gap: "18px", alignContent: "start" }}>
+            <img
+              src={BRAND_LOGO}
+              alt="ThreatWatch AI"
+              style={{
+                width: "min(420px, 100%)",
+                height: "auto",
+                display: "block",
+                filter: "drop-shadow(0 0 18px rgba(46,169,242,0.12))",
+              }}
+            />
             <div
               style={{
                 display: "inline-flex",
@@ -735,7 +738,7 @@ function HeroSection({ mode, status, lastRunMeta }) {
                 ...WRAP_ANYWHERE,
               }}
             >
-              ThreatWatch AI // Security Workflow
+              Security Workflow Layer
             </div>
 
             <div
@@ -2397,7 +2400,10 @@ export default function ThreatWatchDashboard() {
             fontSize: "10px",
           }}
         >
-          <span>ThreatWatch AI Platform · Enterprise triage workflow</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <img src={BRAND_LOGO} alt="ThreatWatch AI logo" style={{ height: "28px", width: "auto", display: "block", opacity: 0.92 }} />
+            <span>ThreatWatch AI Platform · Enterprise triage workflow</span>
+          </div>
           <span>AI-assisted routing, approval, and audit-ready case handling</span>
         </footer>
       </main>
