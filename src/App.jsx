@@ -1709,26 +1709,26 @@ function InboxDeliveryPanel({
   const webhookReady = Boolean(webhookUrl.trim());
   const delivery = result?.delivery || null;
 
-  let helperText = lang === "ko" ? "수신자 이메일을 입력하고, 현재 선택된 incident를 실제 알림 메일로 받아볼 수 있습니다." : "Enter a recipient email to send the selected incident as a live alert message.";
+  let helperText = lang === "ko" ? "수신자 이메일을 입력하면, 현재 선택한 incident를 해당 사용자의 실제 메일함으로 보낼 수 있습니다." : "Enter any recipient email address to send the selected incident as a live alert message.";
   if (!selectedScenario) {
     helperText = lang === "ko" ? "먼저 incident template을 하나 선택해 주세요." : "Select an incident template first.";
   } else if (!emailReady) {
-    helperText = lang === "ko" ? "실제 메일을 보내려면 유효한 이메일 주소를 입력해 주세요." : "Enter a valid email address to send a live message.";
+    helperText = lang === "ko" ? "선택한 사용자에게 메일을 보내려면 유효한 이메일 주소를 입력해 주세요." : "Enter a valid recipient email address to send a live message.";
   } else if (!webhookReady) {
     helperText = lang === "ko" ? "실제 발송은 n8n Webhook URL이 설정되어 있어야 합니다." : "A live send requires an n8n webhook URL.";
   } else if (mode !== "live") {
-    helperText = lang === "ko" ? "메일 발송을 누르면 Connected Workflow로 전환해 실제 이메일 전달을 시도합니다." : "Sending will switch into Connected Workflow and attempt a real email delivery.";
+    helperText = lang === "ko" ? "발송을 누르면 Connected Workflow로 전환해 입력한 수신자 메일로 실제 전달을 시도합니다." : "Sending will switch into Connected Workflow and attempt a live delivery to the specified recipient.";
   }
 
   return (
-    <SectionPanel title={lang === "ko" ? "이메일 체험" : "Inbox Delivery"} subtitle={lang === "ko" ? "선택한 incident를 체험자의 실제 이메일 inbox로 보내는 체험 패널입니다." : "Send the selected incident to the visitor's real inbox as a product experience."} accent="rgba(109,187,155,0.18)">
+    <SectionPanel title={lang === "ko" ? "수신자 이메일 전달" : "Recipient Email Delivery"} subtitle={lang === "ko" ? "선택한 incident를 내 메일뿐 아니라 다른 사용자의 실제 이메일 inbox로도 보낼 수 있는 패널입니다." : "Send the selected incident to any recipient's real inbox, not just your own."} accent="rgba(109,187,155,0.18)">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", marginBottom: "14px" }}>
         <MetricCard label={lang === "ko" ? "선택 케이스" : "Selected Case"} value={selectedScenario?.label || (lang === "ko" ? "템플릿 선택" : "Select a template")} accent="rgba(255,255,255,0.08)" />
         <MetricCard label={lang === "ko" ? "전달 경로" : "Delivery Path"} value={webhookReady ? "n8n Email Workflow" : (lang === "ko" ? "Webhook 필요" : "Webhook required")} accent="rgba(142,167,255,0.25)" />
-        <MetricCard label={lang === "ko" ? "최근 발송" : "Last Delivery"} value={delivery?.recipient || (lang === "ko" ? "아직 발송 없음" : "No email sent yet")} accent="rgba(255,255,255,0.08)" />
+        <MetricCard label={lang === "ko" ? "최근 수신자" : "Last Recipient"} value={delivery?.recipient || (lang === "ko" ? "아직 발송 없음" : "No email sent yet")} accent="rgba(255,255,255,0.08)" />
       </div>
 
-      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>{lang === "ko" ? "수신 이메일" : "Recipient Email"}</div>
+      <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>{lang === "ko" ? "수신자 이메일" : "Recipient Email"}</div>
       <input
         type="email"
         value={recipientEmail}
@@ -1765,7 +1765,7 @@ function InboxDeliveryPanel({
             opacity: isBusy || !selectedScenario || !emailReady || !webhookReady ? 0.56 : 1,
           }}
         >
-          {lang === "ko" ? "내 메일함으로 보내기" : "Send Alert to My Inbox"}
+          {lang === "ko" ? "지정한 메일로 보내기" : "Send to Recipient Inbox"}
         </button>
       </div>
 
@@ -1773,13 +1773,15 @@ function InboxDeliveryPanel({
         {[
           ...(lang === "ko"
             ? [
-                "Webhook payload에 `notification_email`과 `delivery_channel=email`이 함께 전달됩니다.",
-                "n8n이 정상 응답하면 결과 카드에 delivery status와 recipient가 함께 표시됩니다.",
+                "Webhook payload에 입력한 수신자 주소가 `notification_email`과 `recipient_email`로 함께 전달됩니다.",
+                "다른 사용자의 이메일을 입력해도 n8n 메일 노드가 해당 주소를 그대로 수신자로 사용합니다.",
+                "n8n이 정상 응답하면 결과 카드에 delivery status와 최종 recipient가 함께 표시됩니다.",
                 "실제 발송은 Connected Workflow와 Gmail/메일 노드 설정이 연결되어 있어야 합니다.",
               ]
             : [
-                "The webhook payload includes both `notification_email` and `delivery_channel=email`.",
-                "If n8n responds successfully, the result card shows the delivery status and recipient.",
+                "The webhook payload sends the entered address as both `notification_email` and `recipient_email`.",
+                "If you enter another user's address, the n8n mail node uses that address as the live recipient.",
+                "If n8n responds successfully, the result card shows both the delivery status and the final recipient.",
                 "Live sending requires the Connected Workflow and Gmail/mail node to be configured.",
               ])
         ].map((item) => (
@@ -2148,7 +2150,7 @@ export default function ThreatWatchDashboard() {
         if (!webhookUrl.trim()) {
           throw new Error(
             deliveryRequested
-              ? (lang === "ko" ? "실제 이메일 체험을 하려면 n8n Webhook URL을 입력해야 합니다." : "Enter an n8n webhook URL to run the live email experience.")
+              ? (lang === "ko" ? "입력한 수신자에게 실제 이메일을 보내려면 n8n Webhook URL을 입력해야 합니다." : "Enter an n8n webhook URL to send a live email to the specified recipient.")
               : (lang === "ko" ? "Connected Workflow에서는 n8n Webhook URL을 입력해야 합니다." : "Connected Workflow requires an n8n webhook URL."),
           );
         }
@@ -2175,7 +2177,7 @@ export default function ThreatWatchDashboard() {
         } catch (liveError) {
           setWarning(
             deliveryRequested
-              ? `${lang === "ko" ? "Connected workflow 호출이 실패해서 이메일은 발송되지 않았고, 동일한 case의 fallback 결과를 표시합니다." : "The connected workflow failed, so the email was not sent and a fallback result for the same case is shown."} (${liveError.message})`
+              ? `${lang === "ko" ? "Connected workflow 호출이 실패해서 입력한 수신자에게 이메일이 발송되지 않았고, 동일한 case의 fallback 결과를 표시합니다." : "The connected workflow failed, so the email was not sent to the specified recipient and a fallback result for the same case is shown."} (${liveError.message})`
               : `${lang === "ko" ? "Connected workflow 호출이 실패해서 동일한 case의 fallback 결과를 표시합니다." : "The connected workflow failed, so a fallback result for the same case is shown."} (${liveError.message})`,
           );
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 220);
@@ -2284,18 +2286,18 @@ export default function ThreatWatchDashboard() {
 
   const handleSendEmail = () => {
     if (!selectedScenario) {
-      setError(lang === "ko" ? "메일을 보내기 전에 incident template을 먼저 선택해주세요." : "Select an incident template before sending email.");
+      setError(lang === "ko" ? "수신자에게 메일을 보내기 전에 incident template을 먼저 선택해주세요." : "Select an incident template before sending email to a recipient.");
       return;
     }
 
     const normalizedRecipient = normalizeRecipientEmail(recipientEmail);
     if (!isValidEmail(normalizedRecipient)) {
-      setError(lang === "ko" ? "유효한 이메일 주소를 입력해주세요." : "Enter a valid email address.");
+      setError(lang === "ko" ? "유효한 수신자 이메일 주소를 입력해주세요." : "Enter a valid recipient email address.");
       return;
     }
 
     if (!webhookUrl.trim()) {
-      setError(lang === "ko" ? "실제 이메일 체험을 하려면 n8n Webhook URL을 먼저 입력해야 합니다." : "Enter the n8n webhook URL before sending a live email.");
+      setError(lang === "ko" ? "지정한 수신자에게 실제 이메일을 보내려면 n8n Webhook URL을 먼저 입력해야 합니다." : "Enter the n8n webhook URL before sending a live email to the specified recipient.");
       return;
     }
 
