@@ -792,7 +792,12 @@ function HeroSection({ mode, status, lastRunMeta, lang }) {
             <img src={BRAND_LOGO} alt="ThreatWatch AI" className="hero-logo" />
             <div className="hero-eyebrow">{lang === "ko" ? "AI 네이티브 보안관제 플랫폼" : "AI-Native Security Operations Platform"}</div>
             <h1 className="hero-headline">
-              {lang === "ko" ? "모든 보안 신호를 하나의 관제 흐름으로 연결합니다." : "Connect every security signal into one command workflow."}
+              {(lang === "ko"
+                ? ["모든 보안 신호를", "하나의 관제 흐름으로", "연결합니다."]
+                : ["Connect every security signal", "into one command workflow."]
+              ).map((line) => (
+                <span className="hero-headline-line" key={line}>{line}</span>
+              ))}
             </h1>
             <p className="hero-description">
               {lang === "ko"
@@ -2344,13 +2349,13 @@ export default function ThreatWatchDashboard() {
           position: relative;
           z-index: 3;
           display: grid;
-          grid-template-columns: minmax(0, 0.94fr) minmax(360px, 0.7fr);
+          grid-template-columns: minmax(0, 0.9fr) minmax(390px, 0.72fr);
           min-height: min(680px, calc(100vh - 88px));
           gap: 0;
           align-items: center;
           padding: clamp(30px, 4.5vw, 64px);
         }
-        .hero-copy { max-width: 680px; min-width: 0; }
+        .hero-copy { position: relative; z-index: 4; max-width: 660px; min-width: 0; }
         .hero-logo {
           width: min(280px, 78vw);
           height: auto;
@@ -2365,6 +2370,7 @@ export default function ThreatWatchDashboard() {
           color: #98c8ff;
           font-family: ${DISPLAY_FONT};
           font-size: 11px;
+          line-height: 1.45;
           font-weight: 800;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -2381,12 +2387,15 @@ export default function ThreatWatchDashboard() {
           margin: 18px 0 0;
           color: #f4f7ff;
           font-family: ${DISPLAY_FONT};
-          font-size: clamp(42px, 5.4vw, 72px);
-          line-height: 1.02;
+          font-size: clamp(34px, 4.7vw, 61px);
+          line-height: 1.4;
           font-weight: 800;
           letter-spacing: 0;
           text-shadow: 0 0 24px rgba(106, 166, 255, 0.2);
           word-break: keep-all;
+        }
+        .hero-headline-line {
+          display: block;
         }
         .hero-description {
           max-width: 650px;
@@ -2395,6 +2404,7 @@ export default function ThreatWatchDashboard() {
           font-size: 16px;
           line-height: 1.85;
           word-break: keep-all;
+          overflow-wrap: break-word;
         }
         .hero-actions {
           display: flex;
@@ -2414,6 +2424,7 @@ export default function ThreatWatchDashboard() {
           text-decoration: none;
           font-family: ${DISPLAY_FONT};
           font-size: 11px;
+          line-height: 1.4;
           font-weight: 800;
           letter-spacing: 0.16em;
           text-transform: uppercase;
@@ -2457,7 +2468,7 @@ export default function ThreatWatchDashboard() {
           font-size: 14px;
           font-weight: 800;
           letter-spacing: 0.02em;
-          line-height: 1.35;
+          line-height: 1.45;
         }
         .hero-signal-detail {
           margin-top: 6px;
@@ -2467,7 +2478,7 @@ export default function ThreatWatchDashboard() {
         }
         .spline-shell {
           position: relative;
-          min-height: 570px;
+          min-height: 620px;
           align-self: stretch;
           margin-left: clamp(-76px, -5vw, -32px);
           border: 0;
@@ -2494,11 +2505,11 @@ export default function ThreatWatchDashboard() {
         }
         .spline-stage {
           position: absolute;
-          inset: -12% -22% -6% -14%;
+          inset: -18% -34% -10% -26%;
           z-index: 1;
           overflow: visible;
-          -webkit-mask-image: radial-gradient(ellipse at 54% 50%, #000 0%, #000 48%, rgba(0,0,0,0.86) 58%, transparent 75%);
-          mask-image: radial-gradient(ellipse at 54% 50%, #000 0%, #000 48%, rgba(0,0,0,0.86) 58%, transparent 75%);
+          -webkit-mask-image: radial-gradient(ellipse at 57% 50%, #000 0%, #000 50%, rgba(0,0,0,0.84) 60%, transparent 76%);
+          mask-image: radial-gradient(ellipse at 57% 50%, #000 0%, #000 50%, rgba(0,0,0,0.84) 60%, transparent 76%);
         }
         .spline-stage::after {
           content: "";
@@ -2518,7 +2529,7 @@ export default function ThreatWatchDashboard() {
           height: 100%;
           z-index: 3;
           filter: hue-rotate(106deg) saturate(0.86) brightness(0.5) contrast(1.3) drop-shadow(0 32px 48px rgba(0, 0, 0, 0.62)) drop-shadow(0 0 54px rgba(31, 103, 255, 0.28));
-          transform: translateX(-18%) translateY(1%) scale(1.2);
+          transform: translateX(-22%) translateY(1%) scale(1.38);
           transform-origin: center;
         }
         .spline-fallback {
@@ -2577,17 +2588,17 @@ export default function ThreatWatchDashboard() {
             min-height: auto;
           }
           .hero-card { min-height: auto; }
-          .spline-shell { min-height: 480px; margin-left: 0; }
+          .spline-shell { min-height: 500px; margin-left: 0; }
           .hero-signal-rail { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
           .hero-grid { padding: 22px; }
           .hero-logo { margin-bottom: 28px; }
-          .hero-headline { font-size: clamp(36px, 13vw, 54px); }
+          .hero-headline { font-size: clamp(28px, 7.7vw, 30px); line-height: 1.4; }
           .hero-description { font-size: 14px; }
           .spline-shell { min-height: 390px; }
           .spline-stage { inset: -8% -28% -8% -12%; }
-          .spline-stage spline-viewer { transform: translateX(-10%) scale(1.24); }
+          .spline-stage spline-viewer { transform: translateX(-12%) scale(1.34); }
         }
       `}</style>
 
