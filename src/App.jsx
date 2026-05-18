@@ -723,7 +723,7 @@ function TopNav({ mode, status, lang, setLang }) {
   );
 }
 
-function SplineSecurityScene({ lang, status }) {
+function SplineSecurityScene({ lang }) {
   useEffect(() => {
     if (typeof document === "undefined" || document.querySelector("script[data-spline-viewer]")) return;
 
@@ -734,24 +734,8 @@ function SplineSecurityScene({ lang, status }) {
     document.head.appendChild(script);
   }, []);
 
-  const liveItems =
-    lang === "ko"
-      ? ["AI Risk Engine", "HITL 승인", "Audit JSON"]
-      : ["AI Risk Engine", "HITL Approval", "Audit JSON"];
-
   return (
-    <div className="spline-shell" aria-label={lang === "ko" ? "보안 플랫폼 3D 인터랙티브 영역" : "Interactive 3D security platform area"}>
-      <div className="spline-topbar">
-        <div>
-          <div className="spline-kicker">{lang === "ko" ? "3D 보안 관제 레이어" : "3D Security Command Layer"}</div>
-          <div className="spline-title">{lang === "ko" ? "Threat Surface Live" : "Threat Surface Live"}</div>
-        </div>
-        <div className={`spline-state ${status === "running" ? "is-running" : ""}`}>
-          <StatusDot status={status} />
-          <span>{status === "running" ? (lang === "ko" ? "분석 중" : "Analyzing") : (lang === "ko" ? "감시 중" : "Watching")}</span>
-        </div>
-      </div>
-
+    <div className="spline-shell" aria-label={lang === "ko" ? "보안 플랫폼 3D 자물쇠 오브젝트" : "3D security lock object"}>
       <div className="spline-stage">
         <spline-viewer url={SPLINE_SCENE} loading-anim-type="spinner-small-light" events-target="global" />
         <div className="spline-fallback" aria-hidden="true">
@@ -764,15 +748,6 @@ function SplineSecurityScene({ lang, status }) {
           <div className="node-dot dot-c" />
           <div className="node-dot dot-d" />
         </div>
-      </div>
-
-      <div className="spline-console">
-        {liveItems.map((item) => (
-          <div className="spline-console-item" key={item}>
-            <span />
-            {item}
-          </div>
-        ))}
       </div>
     </div>
   );
@@ -833,7 +808,7 @@ function HeroSection({ mode, status, lastRunMeta, lang }) {
             <HeroSignalRail lang={lang} />
           </div>
 
-          <SplineSecurityScene lang={lang} status={status} />
+          <SplineSecurityScene lang={lang} />
         </div>
       </div>
 
@@ -2369,9 +2344,9 @@ export default function ThreatWatchDashboard() {
           position: relative;
           z-index: 3;
           display: grid;
-          grid-template-columns: minmax(0, 0.94fr) minmax(390px, 0.82fr);
+          grid-template-columns: minmax(0, 0.94fr) minmax(360px, 0.7fr);
           min-height: min(680px, calc(100vh - 88px));
-          gap: 22px;
+          gap: 0;
           align-items: center;
           padding: clamp(30px, 4.5vw, 64px);
         }
@@ -2492,98 +2467,58 @@ export default function ThreatWatchDashboard() {
         }
         .spline-shell {
           position: relative;
-          min-height: 500px;
-          border: 1px solid rgba(107, 158, 255, 0.26);
-          border-radius: 8px;
+          min-height: 570px;
+          align-self: stretch;
+          margin-left: clamp(-76px, -5vw, -32px);
+          border: 0;
+          border-radius: 0;
           background:
-            linear-gradient(180deg, rgba(9, 16, 32, 0.68), rgba(2, 5, 12, 0.42)),
-            radial-gradient(circle at 52% 45%, rgba(31, 101, 255, 0.22), transparent 45%);
-          box-shadow: inset 0 0 60px rgba(43, 127, 255, 0.08), 0 34px 80px rgba(0, 0, 0, 0.3);
-          overflow: hidden;
-          backdrop-filter: blur(16px);
+            radial-gradient(circle at 54% 46%, rgba(45, 119, 255, 0.16), transparent 34%),
+            radial-gradient(circle at 62% 72%, rgba(0, 190, 255, 0.12), transparent 42%);
+          box-shadow: none;
+          overflow: visible;
+          isolation: isolate;
+          pointer-events: auto;
         }
         .spline-shell::before {
           content: "";
           position: absolute;
-          inset: 66px 18px 76px;
-          border: 1px solid rgba(92, 153, 255, 0.18);
-          background-image: radial-gradient(rgba(122, 177, 255, 0.24) 1px, transparent 1px);
-          background-size: 18px 18px;
-          opacity: 0.34;
+          inset: 14% -8% 8% 6%;
+          z-index: 0;
+          background:
+            radial-gradient(circle at 48% 43%, rgba(29, 86, 185, 0.3), transparent 42%),
+            radial-gradient(circle at 58% 68%, rgba(2, 28, 70, 0.8), transparent 46%);
+          filter: blur(22px);
+          opacity: 0.86;
           pointer-events: none;
-        }
-        .spline-topbar,
-        .spline-console {
-          position: absolute;
-          left: 18px;
-          right: 18px;
-          z-index: 5;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          border: 1px solid rgba(186, 209, 255, 0.12);
-          background: rgba(3, 8, 19, 0.64);
-          backdrop-filter: blur(18px);
-        }
-        .spline-topbar {
-          top: 18px;
-          min-height: 58px;
-          padding: 12px 14px;
-          border-radius: 6px;
-        }
-        .spline-kicker {
-          color: rgba(186, 209, 255, 0.54);
-          font-family: ${DISPLAY_FONT};
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-        }
-        .spline-title {
-          margin-top: 4px;
-          color: #f4f7ff;
-          font-family: ${DISPLAY_FONT};
-          font-size: 18px;
-          font-weight: 800;
-          letter-spacing: 0.02em;
-        }
-        .spline-state {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          color: rgba(244, 247, 255, 0.78);
-          font-family: ${DISPLAY_FONT};
-          font-size: 10px;
-          font-weight: 800;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
         }
         .spline-stage {
           position: absolute;
-          inset: 0;
-          z-index: 2;
+          inset: -12% -22% -6% -14%;
+          z-index: 1;
+          overflow: visible;
+          -webkit-mask-image: radial-gradient(ellipse at 54% 50%, #000 0%, #000 48%, rgba(0,0,0,0.86) 58%, transparent 75%);
+          mask-image: radial-gradient(ellipse at 54% 50%, #000 0%, #000 48%, rgba(0,0,0,0.86) 58%, transparent 75%);
         }
         .spline-stage::after {
           content: "";
           position: absolute;
-          left: 0;
-          top: 76px;
-          bottom: 66px;
-          width: 31%;
+          inset: 0;
           z-index: 4;
           background:
-            linear-gradient(90deg, rgba(5, 10, 21, 0.98), rgba(5, 10, 21, 0.72), rgba(5, 10, 21, 0)),
-            radial-gradient(circle at 100% 42%, rgba(46, 169, 242, 0.14), transparent 48%);
+            radial-gradient(circle at 55% 45%, rgba(5, 34, 98, 0.54), transparent 38%),
+            linear-gradient(135deg, rgba(2, 12, 34, 0.62), rgba(13, 58, 145, 0.26) 46%, rgba(1, 8, 24, 0.38));
+          mix-blend-mode: color;
           pointer-events: none;
         }
         .spline-stage spline-viewer {
           position: absolute;
-          inset: 54px -130px 34px -86px;
-          width: calc(100% + 216px);
-          height: calc(100% - 88px);
+          inset: 0;
+          width: 100%;
+          height: 100%;
           z-index: 3;
-          transform: translateX(-28%) scale(1.04);
+          filter: hue-rotate(106deg) saturate(0.86) brightness(0.5) contrast(1.3) drop-shadow(0 32px 48px rgba(0, 0, 0, 0.62)) drop-shadow(0 0 54px rgba(31, 103, 255, 0.28));
+          transform: translateX(-18%) translateY(1%) scale(1.2);
           transform-origin: center;
         }
         .spline-fallback {
@@ -2592,7 +2527,7 @@ export default function ThreatWatchDashboard() {
           z-index: 1;
           display: grid;
           place-items: center;
-          opacity: 0.9;
+          opacity: 0.34;
         }
         .orb-core {
           width: min(230px, 48vw);
@@ -2627,29 +2562,6 @@ export default function ThreatWatchDashboard() {
         .dot-b { top: 28%; right: 18%; }
         .dot-c { bottom: 22%; left: 18%; }
         .dot-d { bottom: 18%; right: 28%; }
-        .spline-console {
-          bottom: 18px;
-          min-height: 48px;
-          padding: 10px 12px;
-          border-radius: 6px;
-        }
-        .spline-console-item {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          min-width: 0;
-          color: rgba(230, 238, 255, 0.76);
-          font-size: 11px;
-          font-weight: 700;
-        }
-        .spline-console-item span {
-          width: 7px;
-          height: 7px;
-          flex: 0 0 auto;
-          border-radius: 999px;
-          background: #2d8cff;
-          box-shadow: 0 0 12px rgba(45, 140, 255, 0.72);
-        }
         @keyframes float-core {
           0%, 100% { transform: translateY(0) scale(1); }
           50% { transform: translateY(-12px) scale(1.03); }
@@ -2665,7 +2577,7 @@ export default function ThreatWatchDashboard() {
             min-height: auto;
           }
           .hero-card { min-height: auto; }
-          .spline-shell { min-height: 500px; }
+          .spline-shell { min-height: 480px; margin-left: 0; }
           .hero-signal-rail { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
@@ -2673,9 +2585,9 @@ export default function ThreatWatchDashboard() {
           .hero-logo { margin-bottom: 28px; }
           .hero-headline { font-size: clamp(36px, 13vw, 54px); }
           .hero-description { font-size: 14px; }
-          .spline-shell { min-height: 430px; }
-          .spline-console { align-items: flex-start; flex-direction: column; }
-          .spline-stage spline-viewer { inset: 58px -80px 70px -80px; width: calc(100% + 160px); height: calc(100% - 128px); }
+          .spline-shell { min-height: 390px; }
+          .spline-stage { inset: -8% -28% -8% -12%; }
+          .spline-stage spline-viewer { transform: translateX(-10%) scale(1.24); }
         }
       `}</style>
 
