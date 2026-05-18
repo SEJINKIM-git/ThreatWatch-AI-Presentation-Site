@@ -44,8 +44,8 @@ const BODY_FONT = "'Inter', 'Noto Sans KR', sans-serif";
 const MONO_FONT = "'JetBrains Mono', monospace";
 const WRAP_ANYWHERE = {
   minWidth: 0,
-  wordBreak: "break-word",
-  overflowWrap: "anywhere",
+  wordBreak: "keep-all",
+  overflowWrap: "break-word",
   hyphens: "auto",
 };
 const BRAND_LOGO = "/threatwatch-logo.svg";
@@ -347,7 +347,7 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
             margin: "8px 0 0",
             color: THEME.text,
             fontSize: "clamp(32px, 4vw, 46px)",
-            lineHeight: 1.04,
+            lineHeight: 1.4,
             fontWeight: 800,
             fontFamily: DISPLAY_FONT,
             letterSpacing: "-0.02em",
@@ -363,8 +363,51 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
 }
 
 function PageSection({ id, tint = THEME.lineStrong, children }) {
+  const sectionSurface = {
+    problem: {
+      background: "linear-gradient(180deg, rgba(23, 10, 18, 0.34), rgba(8, 13, 24, 0.1))",
+      image: "radial-gradient(circle at 12% 20%, rgba(226,127,119,0.14), transparent 30%)",
+    },
+    solution: {
+      background: "linear-gradient(180deg, rgba(11, 22, 43, 0.42), rgba(8, 13, 24, 0.1))",
+      image: "radial-gradient(circle at 86% 18%, rgba(98,154,255,0.17), transparent 34%)",
+    },
+    process: {
+      background: "linear-gradient(180deg, rgba(8, 22, 35, 0.36), rgba(8, 13, 24, 0.1))",
+      image: `linear-gradient(rgba(133,197,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.045) 1px, transparent 1px)`,
+      backgroundSize: "56px 56px",
+    },
+    simulator: {
+      background: "linear-gradient(180deg, rgba(28, 18, 31, 0.34), rgba(8, 13, 24, 0.1))",
+      image: "radial-gradient(circle at 18% 24%, rgba(198,143,152,0.12), transparent 34%)",
+    },
+    audit: {
+      background: "linear-gradient(180deg, rgba(8, 30, 27, 0.34), rgba(8, 13, 24, 0.1))",
+      image: "radial-gradient(circle at 82% 26%, rgba(109,187,155,0.14), transparent 32%)",
+    },
+    customers: {
+      background: "linear-gradient(180deg, rgba(14, 22, 42, 0.38), rgba(8, 13, 24, 0.1))",
+      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.66), rgba(5, 10, 20, 0.88)), url("${HERO_IMAGE}") center / cover no-repeat`,
+    },
+  }[id] || {};
+
   return (
-    <section id={id} style={{ marginTop: "88px", scrollMarginTop: "120px", position: "relative" }}>
+    <section
+      id={id}
+      style={{
+        marginTop: "112px",
+        padding: "34px 26px 42px",
+        scrollMarginTop: "120px",
+        position: "relative",
+        borderRadius: "8px",
+        background: sectionSurface.background || "transparent",
+        backgroundImage: sectionSurface.image,
+        backgroundSize: sectionSurface.backgroundSize,
+        border: sectionSurface.background ? `1px solid ${THEME.line}` : "none",
+        boxShadow: sectionSurface.background ? "inset 0 1px 0 rgba(255,255,255,0.03)" : "none",
+        overflow: "hidden",
+      }}
+    >
       <div
         style={{
           position: "absolute",
@@ -844,7 +887,7 @@ function HeroSection({ mode, status, lastRunMeta, lang }) {
                 {lang === "ko" ? "명령 워크스페이스" : "Command Workspace"}
               </div>
               <div style={{ marginTop: "8px", color: THEME.textSoft, fontSize: "13px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>
-                {lang === "ko" ? "Overview 영역과 실제 제품 워크스페이스를 분리해, 히어로 메시지와 인터페이스 미리보기가 서로 겹치지 않도록 구성했습니다." : "Separate the overview and the product workspace so the hero message and interface preview never overlap."}
+                {lang === "ko" ? "실시간 관제 화면은 케이스 상태, 위험 신호, 승인 경로를 한 곳에 모아 보안팀이 즉시 판단할 수 있게 합니다." : "The live command workspace brings case status, risk signals, and approval paths into one operating view."}
               </div>
             </div>
           </div>
@@ -862,7 +905,7 @@ function ProblemSection({ lang }) {
       <NarrativeHeader
         eyebrow={lang === "ko" ? "운영 문제" : "Operational Pain"}
         title={lang === "ko" ? "볼륨, 규제, 책임이 겹치면 수작업 트리아지는 곧 기업 리스크가 됩니다." : "Manual triage becomes an enterprise risk when volume, regulation, and accountability collide."}
-        description={lang === "ko" ? "중요한 것은 단순히 alert를 빠르게 보는 것이 아니라, 어떤 팀이 어떤 근거로 어떤 결정을 내렸는지를 일관되게 설명할 수 있는가입니다. 이 섹션은 기존 운영의 병목과 핵심 자동화 범위를 먼저 보여줍니다." : "Speed alone is not enough. Teams need to show who made which decision, on what basis, and under which controls. This section frames the operational bottleneck and the red-box automation scope first."}
+        description={lang === "ko" ? "중요한 것은 단순히 alert를 빠르게 보는 것이 아니라, 어떤 팀이 어떤 근거로 어떤 결정을 내렸는지를 일관되게 설명할 수 있는가입니다. ThreatWatch AI는 기존 운영 병목을 줄이고 핵심 자동화 범위를 명확히 합니다." : "Speed alone is not enough. Teams need to show who made which decision, on what basis, and under which controls. ThreatWatch AI reduces operational bottlenecks and clarifies the automation boundary."}
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px" }}>
@@ -930,7 +973,7 @@ function SolutionSection({ lang }) {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "14px", marginTop: "14px" }}>
-        <SectionPanel title={lang === "ko" ? "솔루션 모듈" : "Solution Modules"} subtitle={lang === "ko" ? "실제 SaaS 홈페이지처럼 제품 구조를 capability 중심으로 정리합니다." : "Present the product structure as enterprise capabilities."} accent="rgba(142,167,255,0.16)">
+        <SectionPanel title={lang === "ko" ? "솔루션 모듈" : "Solution Modules"} subtitle={lang === "ko" ? "보안 운영에 필요한 기능을 intake, 판단, 승인, 감사 증적으로 나누어 제공합니다." : "Core capabilities are organized around intake, decisioning, approval, and audit evidence."} accent="rgba(142,167,255,0.16)">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px" }}>
             {PLATFORM_MODULES.map((item) => (
               <div
@@ -995,7 +1038,7 @@ function ProcessSection({ activeNode, status, lang }) {
       <NarrativeHeader
         eyebrow={lang === "ko" ? "표준화된 워크플로우" : "Codified Workflow"}
         title={lang === "ko" ? "엔터프라이즈 보안팀을 위한 BPMN 기반 운영 모델." : "A BPMN-backed operating model for enterprise security teams."}
-        description={lang === "ko" ? "이 섹션은 메인 BPMN workflow를 웹 제품 구조로 번역한 영역입니다. lane과 decision path가 중심이며, n8n 노드는 이 흐름을 구현하는 엔진 레이어로만 보여줍니다." : "This section translates the BPMN flow into a product surface. Lanes and decision paths stay primary, while n8n appears only as the execution layer."}
+        description={lang === "ko" ? "보안 이벤트는 탐지, 보강, 요약, 점수화, 승인, 기록 단계를 따라 이동합니다. 각 레인은 담당 팀과 판단 경계를 분명히 하도록 설계했습니다." : "Security events move through detection, enrichment, summarization, scoring, approval, and logging. Each lane makes team ownership and decision boundaries explicit."}
         action={
           <a
             href="#simulator"
@@ -1053,7 +1096,7 @@ function ProcessSection({ activeNode, status, lang }) {
                     <div style={{ fontSize: "10px", color: state === "idle" ? lane.accent : "#ffffff", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 700 }}>
                       {state === "active" ? (lang === "ko" ? "진행 중" : "Active step") : state === "done" ? (lang === "ko" ? "완료" : "Completed") : state === "error" ? (lang === "ko" ? "확인 필요" : "Needs attention") : (lang === "ko" ? "프로세스 단계" : "Process step")}
                     </div>
-                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.2, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>
+                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.4, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>
                       {t(step.title, lang)}
                     </div>
                     <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.68)", fontSize: "13px", lineHeight: 1.75, ...WRAP_ANYWHERE }}>{t(step.detail, lang)}</div>
@@ -1064,7 +1107,7 @@ function ProcessSection({ activeNode, status, lang }) {
           </SectionPanel>
         ))}
 
-        <SectionPanel title={lang === "ko" ? "워크플로우 엔진 매핑" : "Workflow Engine Mapping"} subtitle={lang === "ko" ? "n8n 노드는 제품 UI 뒤에서 어떤 실행 원리를 담당하는지만 보여줍니다." : "Show which execution responsibility each n8n node owns behind the product UI."} accent="rgba(142,167,255,0.18)">
+        <SectionPanel title={lang === "ko" ? "워크플로우 엔진 매핑" : "Workflow Engine Mapping"} subtitle={lang === "ko" ? "각 실행 노드는 알림 수신, 보강, 검증, 라우팅, 기록 중 하나의 책임만 담당합니다." : "Each execution node owns one responsibility across intake, enrichment, validation, routing, and logging."} accent="rgba(142,167,255,0.18)">
           <PipelineVisualizer activeNode={activeNode} status={status} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", marginTop: "14px" }}>
             {ENGINE_MAP.map((item) => (
@@ -2296,8 +2339,9 @@ export default function ThreatWatchDashboard() {
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { margin: 0; background: ${THEME.bgDeep}; color: ${THEME.text}; font-family: ${BODY_FONT}; }
-        input, textarea, button { font: inherit; }
+        body { margin: 0; background: ${THEME.bgDeep}; color: ${THEME.text}; font-family: ${BODY_FONT}; line-height: 1.6; word-break: keep-all; overflow-wrap: break-word; }
+        input, textarea, button { font: inherit; line-height: 1.4; }
+        a { line-height: 1.4; }
         ::selection { background: rgba(186, 209, 255, 0.24); }
         .hero-section { padding-top: 40px; }
         .hero-card {
@@ -2478,7 +2522,7 @@ export default function ThreatWatchDashboard() {
         }
         .spline-shell {
           position: relative;
-          min-height: 620px;
+          min-height: 660px;
           align-self: stretch;
           margin-left: clamp(-76px, -5vw, -32px);
           border: 0;
@@ -2505,11 +2549,11 @@ export default function ThreatWatchDashboard() {
         }
         .spline-stage {
           position: absolute;
-          inset: -18% -34% -10% -26%;
+          inset: -22% -42% -14% -32%;
           z-index: 1;
           overflow: visible;
-          -webkit-mask-image: radial-gradient(ellipse at 57% 50%, #000 0%, #000 50%, rgba(0,0,0,0.84) 60%, transparent 76%);
-          mask-image: radial-gradient(ellipse at 57% 50%, #000 0%, #000 50%, rgba(0,0,0,0.84) 60%, transparent 76%);
+          -webkit-mask-image: radial-gradient(ellipse at 59% 50%, #000 0%, #000 48%, rgba(0,0,0,0.82) 60%, transparent 75%);
+          mask-image: radial-gradient(ellipse at 59% 50%, #000 0%, #000 48%, rgba(0,0,0,0.82) 60%, transparent 75%);
         }
         .spline-stage::after {
           content: "";
@@ -2529,7 +2573,7 @@ export default function ThreatWatchDashboard() {
           height: 100%;
           z-index: 3;
           filter: hue-rotate(106deg) saturate(0.86) brightness(0.5) contrast(1.3) drop-shadow(0 32px 48px rgba(0, 0, 0, 0.62)) drop-shadow(0 0 54px rgba(31, 103, 255, 0.28));
-          transform: translateX(-22%) translateY(1%) scale(1.38);
+          transform: translateX(-26%) translateY(1%) scale(1.55);
           transform-origin: center;
         }
         .spline-fallback {
@@ -2588,7 +2632,7 @@ export default function ThreatWatchDashboard() {
             min-height: auto;
           }
           .hero-card { min-height: auto; }
-          .spline-shell { min-height: 500px; margin-left: 0; }
+          .spline-shell { min-height: 520px; margin-left: 0; }
           .hero-signal-rail { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
@@ -2596,9 +2640,9 @@ export default function ThreatWatchDashboard() {
           .hero-logo { margin-bottom: 28px; }
           .hero-headline { font-size: clamp(28px, 7.7vw, 30px); line-height: 1.4; }
           .hero-description { font-size: 14px; }
-          .spline-shell { min-height: 390px; }
-          .spline-stage { inset: -8% -28% -8% -12%; }
-          .spline-stage spline-viewer { transform: translateX(-12%) scale(1.34); }
+          .spline-shell { min-height: 410px; }
+          .spline-stage { inset: -12% -34% -12% -18%; }
+          .spline-stage spline-viewer { transform: translateX(-16%) scale(1.46); }
         }
       `}</style>
 
@@ -2614,7 +2658,7 @@ export default function ThreatWatchDashboard() {
           <NarrativeHeader
             eyebrow={lang === "ko" ? "제품 워크스페이스" : "Product Workspace"}
             title={lang === "ko" ? "케이스 트리아지, 라우팅, 증적 기록을 위한 실제 제품 화면." : "A working product surface for case triage, routing, and evidence capture."}
-            description={lang === "ko" ? "상단 섹션이 문제와 솔루션을 설명한다면, 이 영역은 실제 제품이 incident를 어떻게 받아들이고, 처리하고, 결과를 남기는지 보여줍니다. 선택된 case, pipeline state, result, history를 하나의 workspace로 묶었습니다." : "While the upper sections explain the problem and solution, this workspace shows how the product ingests, processes, and records each incident."}
+            description={lang === "ko" ? "제품 워크스페이스는 incident intake, pipeline state, risk output, history를 하나로 묶어 관제팀이 같은 근거로 케이스를 처리하도록 돕습니다." : "The product workspace unifies incident intake, pipeline state, risk output, and history so security teams work from the same evidence."}
           />
 
           {scenarioLoadError ? <NoticeBanner kind="error" text={scenarioLoadError} lang={lang} /> : null}
