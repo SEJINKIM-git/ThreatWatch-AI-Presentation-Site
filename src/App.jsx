@@ -49,6 +49,8 @@ const WRAP_ANYWHERE = {
   hyphens: "auto",
 };
 const BRAND_LOGO = "/threatwatch-logo.svg";
+const HERO_IMAGE = "/security-design-hero.png";
+const SPLINE_SCENE = "https://prod.spline.design/dbYDAQsnGPSeHJv0/scene.splinecode";
 const LANGUAGE_OPTIONS = ["ko", "en"];
 
 function t(copy, lang) {
@@ -408,6 +410,9 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
         padding: "20px",
         boxShadow: `0 0 0 1px ${THEME.line}, inset 0 0 20px rgba(186, 209, 255, 0.04), 0 24px 54px rgba(9,14,25,0.24)`,
         backdropFilter: "blur(20px)",
+        minWidth: 0,
+        maxWidth: "100%",
+        overflow: "hidden",
       }}
     >
       <div style={{ marginBottom: "16px" }}>
@@ -718,147 +723,128 @@ function TopNav({ mode, status, lang, setLang }) {
   );
 }
 
-function HeroSection({ mode, status, lastRunMeta, lang }) {
+function SplineSecurityScene({ lang, status }) {
+  useEffect(() => {
+    if (typeof document === "undefined" || document.querySelector("script[data-spline-viewer]")) return;
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = "https://unpkg.com/@splinetool/viewer/build/spline-viewer.js";
+    script.dataset.splineViewer = "true";
+    document.head.appendChild(script);
+  }, []);
+
+  const liveItems =
+    lang === "ko"
+      ? ["AI Risk Engine", "HITL 승인", "Audit JSON"]
+      : ["AI Risk Engine", "HITL Approval", "Audit JSON"];
+
   return (
-    <section id="overview" style={{ paddingTop: "40px" }}>
-      <div style={{ display: "grid", gap: "18px" }}>
-        <div
-          style={{
-            position: "relative",
-            overflow: "hidden",
-            borderRadius: "32px",
-            border: `1px solid ${THEME.lineStrong}`,
-            padding: "32px",
-            background: "linear-gradient(180deg, rgba(14,19,31,0.98), rgba(23,27,39,0.98))",
-            boxShadow: `0 0 0 1px ${THEME.line}, 0 28px 72px rgba(9,14,25,0.3)`,
-            backdropFilter: "blur(12px)",
-            isolation: "isolate",
-            ...WRAP_ANYWHERE,
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(180deg, rgba(154,182,234,0.02), transparent 24%, transparent 100%)",
-              pointerEvents: "none",
-            }}
-          />
+    <div className="spline-shell" aria-label={lang === "ko" ? "보안 플랫폼 3D 인터랙티브 영역" : "Interactive 3D security platform area"}>
+      <div className="spline-topbar">
+        <div>
+          <div className="spline-kicker">{lang === "ko" ? "3D 보안 관제 레이어" : "3D Security Command Layer"}</div>
+          <div className="spline-title">{lang === "ko" ? "Threat Surface Live" : "Threat Surface Live"}</div>
+        </div>
+        <div className={`spline-state ${status === "running" ? "is-running" : ""}`}>
+          <StatusDot status={status} />
+          <span>{status === "running" ? (lang === "ko" ? "분석 중" : "Analyzing") : (lang === "ko" ? "감시 중" : "Watching")}</span>
+        </div>
+      </div>
 
-          <div style={{ position: "relative", zIndex: 1, display: "grid", gap: "18px", alignContent: "start" }}>
-            <img
-              src={BRAND_LOGO}
-              alt="ThreatWatch AI"
-              style={{
-                width: "min(420px, 100%)",
-                height: "auto",
-                display: "block",
-                filter: "drop-shadow(0 0 18px rgba(46,169,242,0.12))",
-              }}
-            />
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                borderRadius: "999px",
-                border: `1px solid ${THEME.lineStrong}`,
-                background: "rgba(255,255,255,0.03)",
-                color: THEME.text,
-                padding: "8px 14px",
-                fontSize: "10px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-                fontFamily: DISPLAY_FONT,
-                width: "fit-content",
-                maxWidth: "100%",
-                ...WRAP_ANYWHERE,
-              }}
-            >
-              {lang === "ko" ? "보안 워크플로우 레이어" : "Security Workflow Layer"}
-            </div>
+      <div className="spline-stage">
+        <spline-viewer url={SPLINE_SCENE} loading-anim-type="spinner-small-light" events-target="global" />
+        <div className="spline-fallback" aria-hidden="true">
+          <div className="orb-core" />
+          <div className="orbit orbit-a" />
+          <div className="orbit orbit-b" />
+          <div className="orbit orbit-c" />
+          <div className="node-dot dot-a" />
+          <div className="node-dot dot-b" />
+          <div className="node-dot dot-c" />
+          <div className="node-dot dot-d" />
+        </div>
+      </div>
 
-            <div
-              style={{
-                border: `1px solid ${THEME.line}`,
-                background: "rgba(9,14,25,0.58)",
-                padding: "24px 28px",
-                boxShadow: `inset 0 0 30px rgba(186,209,255,0.04)`,
-              }}
-            >
-              <div style={{ color: THEME.textMuted, fontSize: "11px", letterSpacing: "0.24em", textTransform: "uppercase", fontFamily: DISPLAY_FONT, marginBottom: "12px" }}>{lang === "ko" ? "AI 네이티브 보안 운영" : "AI-native security operations"}</div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: "clamp(22px, 4vw, 58px)",
-                  lineHeight: 1.05,
-                  color: THEME.text,
-                  fontWeight: 800,
-                  fontFamily: DISPLAY_FONT,
-                  letterSpacing: "-0.04em",
-                  textShadow: "0 0 14px rgba(186,209,255,0.22)",
-                  whiteSpace: "nowrap",
-                  ...WRAP_ANYWHERE,
-                }}
-              >
-                {lang === "ko" ? "보안 트리아지" : "Security Triage"}
-              </h1>
-            </div>
+      <div className="spline-console">
+        {liveItems.map((item) => (
+          <div className="spline-console-item" key={item}>
+            <span />
+            {item}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-            <p style={{ margin: 0, maxWidth: "720px", color: THEME.textSoft, fontSize: "16px", lineHeight: 1.9, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>
-              {lang === "ko" ? "ThreatWatch AI는 enrichment, LLM summary, rule-based scoring, manager approval, audit logging을 하나의 workflow layer로 묶어 대규모 보안 운영을 더 선명하고 일관되게 만듭니다." : "ThreatWatch AI unifies enrichment, LLM summaries, rule-based scoring, manager approval, and audit logging into one workflow layer for high-volume security operations."}
-            </p>
+function HeroSignalRail({ lang }) {
+  const items =
+    lang === "ko"
+      ? [
+          ["01", "SIEM 신호 수집", "Alert, IAM, Geo-IP"],
+          ["02", "AI 트리아지", "Summary + Risk Score"],
+          ["03", "승인 및 증적", "HITL + Audit Log"],
+        ]
+      : [
+          ["01", "SIEM Signal Intake", "Alert, IAM, Geo-IP"],
+          ["02", "AI Triage", "Summary + Risk Score"],
+          ["03", "Approval Evidence", "HITL + Audit Log"],
+        ];
 
-            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <a
-                href="#simulator"
-                style={{
-                  textDecoration: "none",
-                  borderRadius: "10px",
-                  border: `1px solid ${THEME.lineStrong}`,
-                  background: "linear-gradient(135deg, rgba(186,209,255,0.18), rgba(154,182,234,0.08))",
-                  color: THEME.text,
-                  padding: "14px 20px",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  fontFamily: DISPLAY_FONT,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  boxShadow: `0 0 18px rgba(186,209,255,0.14)`,
-                }}
-              >
-                {lang === "ko" ? "제품 둘러보기" : "Explore the Product"}
-              </a>
-              <a
-                href="#process"
-                style={{
-                  textDecoration: "none",
-                  borderRadius: "10px",
-                  border: `1px solid ${THEME.line}`,
-                  background: "rgba(27,31,43,0.5)",
-                  color: THEME.textSoft,
-                  padding: "14px 20px",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  fontFamily: DISPLAY_FONT,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {lang === "ko" ? "워크플로우 보기" : "See the Workflow"}
-              </a>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
-              {HERO_METRICS.map((item) => (
-                <MetricCard key={t(item.label, lang)} label={t(item.label, lang)} value={`${t(item.value, lang)}\n${t(item.note, lang)}`} accent={THEME.line} />
-              ))}
-            </div>
-
-            <TrustBand lang={lang} />
+  return (
+    <div className="hero-signal-rail">
+      {items.map(([index, title, detail]) => (
+        <div className="hero-signal" key={index}>
+          <div className="hero-signal-index">{index}</div>
+          <div>
+            <div className="hero-signal-title">{title}</div>
+            <div className="hero-signal-detail">{detail}</div>
           </div>
         </div>
+      ))}
+    </div>
+  );
+}
+
+function HeroSection({ mode, status, lastRunMeta, lang }) {
+  return (
+    <section id="overview" className="hero-section">
+      <div className="hero-card">
+        <div className="hero-image-layer" />
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <img src={BRAND_LOGO} alt="ThreatWatch AI" className="hero-logo" />
+            <div className="hero-eyebrow">{lang === "ko" ? "AI 네이티브 보안관제 플랫폼" : "AI-Native Security Operations Platform"}</div>
+            <h1 className="hero-headline">
+              {lang === "ko" ? "모든 보안 신호를 하나의 관제 흐름으로 연결합니다." : "Connect every security signal into one command workflow."}
+            </h1>
+            <p className="hero-description">
+              {lang === "ko"
+                ? "ThreatWatch AI는 SIEM 알림, 보강 데이터, LLM 요약, 위험 점수, 승인, 감사 로그를 하나의 인터랙티브 보안 플랫폼으로 묶어 관제팀의 판단 속도와 일관성을 높입니다."
+                : "ThreatWatch AI combines SIEM alerts, enrichment, LLM summaries, risk scoring, approval, and audit logs into an interactive security platform for faster, more consistent decisions."}
+            </p>
+
+            <div className="hero-actions">
+              <a className="hero-primary" href="#simulator">{lang === "ko" ? "제품 워크스페이스 실행" : "Run Product Workspace"}</a>
+              <a className="hero-secondary" href="#process">{lang === "ko" ? "관제 흐름 보기" : "View Command Flow"}</a>
+            </div>
+
+            <HeroSignalRail lang={lang} />
+          </div>
+
+          <SplineSecurityScene lang={lang} status={status} />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gap: "18px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px" }}>
+          {HERO_METRICS.map((item) => (
+            <MetricCard key={t(item.label, lang)} label={t(item.label, lang)} value={`${t(item.value, lang)}\n${t(item.note, lang)}`} accent={THEME.line} />
+          ))}
+        </div>
+
+        <TrustBand lang={lang} />
 
         <div
           style={{
@@ -987,7 +973,7 @@ function SolutionSection({ lang }) {
           <div style={{ display: "grid", gap: "10px" }}>
             {ENTERPRISE_OUTCOMES.map((item) => (
               <div
-                key={item.label}
+                key={t(item.label, "en")}
                 style={{
                   borderRadius: "16px",
                   padding: "16px",
@@ -1064,7 +1050,7 @@ function ProcessSection({ activeNode, status, lang }) {
 
                 return (
                   <div
-                    key={`${lane.lane}-${step.title}`}
+                    key={`${lane.lane}-${t(step.title, "en")}`}
                     style={{
                       borderRadius: "18px",
                       padding: "16px",
@@ -1125,7 +1111,7 @@ function ProcessSection({ activeNode, status, lang }) {
 
 function PipelineVisualizer({ activeNode, status }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "2px", overflowX: "auto", padding: "12px 0 4px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: "2px", overflowX: "auto", maxWidth: "100%", padding: "12px 0 4px" }}>
       {PIPELINE_NODES.map((node, index) => {
         const nodeIndex = PIPELINE_NODES.findIndex((item) => item.id === activeNode);
         let state = "idle";
@@ -2333,6 +2319,364 @@ export default function ThreatWatchDashboard() {
         body { margin: 0; background: ${THEME.bgDeep}; color: ${THEME.text}; font-family: ${BODY_FONT}; }
         input, textarea, button { font: inherit; }
         ::selection { background: rgba(186, 209, 255, 0.24); }
+        .hero-section { padding-top: 40px; }
+        .hero-card {
+          position: relative;
+          overflow: hidden;
+          min-height: min(680px, calc(100vh - 88px));
+          border: 1px solid rgba(186, 209, 255, 0.22);
+          border-radius: 0 0 8px 8px;
+          background: #050914;
+          box-shadow: 0 0 0 1px rgba(186, 209, 255, 0.08), 0 34px 80px rgba(0, 0, 0, 0.38);
+          isolation: isolate;
+        }
+        .hero-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 78% 18%, rgba(58, 139, 255, 0.2), transparent 28%),
+            radial-gradient(circle at 48% 82%, rgba(8, 180, 194, 0.16), transparent 24%),
+            linear-gradient(90deg, rgba(2, 5, 13, 0.94) 0%, rgba(5, 9, 20, 0.82) 44%, rgba(4, 9, 18, 0.42) 100%);
+          z-index: 1;
+          pointer-events: none;
+        }
+        .hero-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(116, 168, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(116, 168, 255, 0.08) 1px, transparent 1px);
+          background-size: 72px 72px;
+          mask-image: linear-gradient(90deg, rgba(0,0,0,0.2), rgba(0,0,0,0.7), rgba(0,0,0,0.1));
+          opacity: 0.28;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .hero-image-layer {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(180deg, rgba(3, 7, 16, 0.04), rgba(3, 7, 16, 0.88)),
+            url("${HERO_IMAGE}") center / cover no-repeat;
+          opacity: 0.48;
+          filter: saturate(0.95) contrast(1.08);
+          transform: scale(1.02);
+          z-index: 0;
+        }
+        .hero-grid {
+          position: relative;
+          z-index: 3;
+          display: grid;
+          grid-template-columns: minmax(0, 0.94fr) minmax(390px, 0.82fr);
+          min-height: min(680px, calc(100vh - 88px));
+          gap: 22px;
+          align-items: center;
+          padding: clamp(30px, 4.5vw, 64px);
+        }
+        .hero-copy { max-width: 680px; min-width: 0; }
+        .hero-logo {
+          width: min(280px, 78vw);
+          height: auto;
+          display: block;
+          margin-bottom: 30px;
+          filter: drop-shadow(0 0 18px rgba(46,169,242,0.18));
+        }
+        .hero-eyebrow {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          color: #98c8ff;
+          font-family: ${DISPLAY_FONT};
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          text-shadow: 0 0 14px rgba(73, 147, 255, 0.38);
+        }
+        .hero-eyebrow::before {
+          content: "";
+          width: 22px;
+          height: 2px;
+          background: #2b7fff;
+          box-shadow: 0 0 14px rgba(43, 127, 255, 0.72);
+        }
+        .hero-headline {
+          margin: 18px 0 0;
+          color: #f4f7ff;
+          font-family: ${DISPLAY_FONT};
+          font-size: clamp(42px, 5.4vw, 72px);
+          line-height: 1.02;
+          font-weight: 800;
+          letter-spacing: 0;
+          text-shadow: 0 0 24px rgba(106, 166, 255, 0.2);
+          word-break: keep-all;
+        }
+        .hero-description {
+          max-width: 650px;
+          margin: 22px 0 0;
+          color: rgba(230, 238, 255, 0.78);
+          font-size: 16px;
+          line-height: 1.85;
+          word-break: keep-all;
+        }
+        .hero-actions {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-top: 30px;
+        }
+        .hero-primary,
+        .hero-secondary {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 46px;
+          padding: 0 18px;
+          border-radius: 6px;
+          color: #f4f7ff;
+          text-decoration: none;
+          font-family: ${DISPLAY_FONT};
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+        .hero-primary {
+          border: 1px solid rgba(98, 154, 255, 0.58);
+          background: linear-gradient(135deg, rgba(32, 102, 255, 0.42), rgba(2, 226, 255, 0.12));
+          box-shadow: 0 0 28px rgba(43, 127, 255, 0.24);
+        }
+        .hero-secondary {
+          border: 1px solid rgba(186, 209, 255, 0.18);
+          background: rgba(13, 22, 39, 0.58);
+        }
+        .hero-signal-rail {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1px;
+          max-width: 680px;
+          margin-top: 38px;
+          border: 1px solid rgba(119, 166, 255, 0.14);
+          background: rgba(119, 166, 255, 0.1);
+        }
+        .hero-signal {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr);
+          gap: 12px;
+          min-height: 96px;
+          padding: 18px;
+          background: rgba(4, 10, 23, 0.62);
+          backdrop-filter: blur(14px);
+        }
+        .hero-signal-index {
+          color: #3d8dff;
+          font-family: ${MONO_FONT};
+          font-size: 12px;
+          font-weight: 800;
+        }
+        .hero-signal-title {
+          color: rgba(244, 247, 255, 0.9);
+          font-family: ${DISPLAY_FONT};
+          font-size: 14px;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+          line-height: 1.35;
+        }
+        .hero-signal-detail {
+          margin-top: 6px;
+          color: rgba(222, 226, 243, 0.48);
+          font-size: 11px;
+          line-height: 1.5;
+        }
+        .spline-shell {
+          position: relative;
+          min-height: 500px;
+          border: 1px solid rgba(107, 158, 255, 0.26);
+          border-radius: 8px;
+          background:
+            linear-gradient(180deg, rgba(9, 16, 32, 0.68), rgba(2, 5, 12, 0.42)),
+            radial-gradient(circle at 52% 45%, rgba(31, 101, 255, 0.22), transparent 45%);
+          box-shadow: inset 0 0 60px rgba(43, 127, 255, 0.08), 0 34px 80px rgba(0, 0, 0, 0.3);
+          overflow: hidden;
+          backdrop-filter: blur(16px);
+        }
+        .spline-shell::before {
+          content: "";
+          position: absolute;
+          inset: 66px 18px 76px;
+          border: 1px solid rgba(92, 153, 255, 0.18);
+          background-image: radial-gradient(rgba(122, 177, 255, 0.24) 1px, transparent 1px);
+          background-size: 18px 18px;
+          opacity: 0.34;
+          pointer-events: none;
+        }
+        .spline-topbar,
+        .spline-console {
+          position: absolute;
+          left: 18px;
+          right: 18px;
+          z-index: 5;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          border: 1px solid rgba(186, 209, 255, 0.12);
+          background: rgba(3, 8, 19, 0.64);
+          backdrop-filter: blur(18px);
+        }
+        .spline-topbar {
+          top: 18px;
+          min-height: 58px;
+          padding: 12px 14px;
+          border-radius: 6px;
+        }
+        .spline-kicker {
+          color: rgba(186, 209, 255, 0.54);
+          font-family: ${DISPLAY_FONT};
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+        .spline-title {
+          margin-top: 4px;
+          color: #f4f7ff;
+          font-family: ${DISPLAY_FONT};
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+        }
+        .spline-state {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: rgba(244, 247, 255, 0.78);
+          font-family: ${DISPLAY_FONT};
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+        .spline-stage {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+        }
+        .spline-stage::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 76px;
+          bottom: 66px;
+          width: 31%;
+          z-index: 4;
+          background:
+            linear-gradient(90deg, rgba(5, 10, 21, 0.98), rgba(5, 10, 21, 0.72), rgba(5, 10, 21, 0)),
+            radial-gradient(circle at 100% 42%, rgba(46, 169, 242, 0.14), transparent 48%);
+          pointer-events: none;
+        }
+        .spline-stage spline-viewer {
+          position: absolute;
+          inset: 54px -130px 34px -86px;
+          width: calc(100% + 216px);
+          height: calc(100% - 88px);
+          z-index: 3;
+          transform: translateX(-28%) scale(1.04);
+          transform-origin: center;
+        }
+        .spline-fallback {
+          position: absolute;
+          inset: 112px 56px 112px;
+          z-index: 1;
+          display: grid;
+          place-items: center;
+          opacity: 0.9;
+        }
+        .orb-core {
+          width: min(230px, 48vw);
+          aspect-ratio: 1;
+          border-radius: 999px;
+          border: 1px solid rgba(111, 172, 255, 0.38);
+          background:
+            radial-gradient(circle at 36% 32%, rgba(214, 247, 255, 0.95), rgba(48, 119, 255, 0.18) 22%, transparent 58%),
+            radial-gradient(circle at 66% 72%, rgba(0, 255, 224, 0.22), transparent 42%),
+            rgba(9, 24, 48, 0.86);
+          box-shadow: inset -34px -40px 80px rgba(0, 0, 0, 0.58), 0 0 80px rgba(43, 127, 255, 0.26);
+          animation: float-core 6s ease-in-out infinite;
+        }
+        .orbit {
+          position: absolute;
+          border: 1px solid rgba(120, 174, 255, 0.28);
+          border-radius: 999px;
+          transform-style: preserve-3d;
+        }
+        .orbit-a { width: 330px; height: 112px; transform: rotate(-22deg); animation: orbit-glow 4.8s ease-in-out infinite; }
+        .orbit-b { width: 370px; height: 156px; transform: rotate(32deg); animation: orbit-glow 5.8s ease-in-out infinite reverse; }
+        .orbit-c { width: 250px; height: 250px; transform: rotate(68deg); animation: orbit-glow 6.8s ease-in-out infinite; }
+        .node-dot {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          background: #4db4ff;
+          box-shadow: 0 0 18px rgba(77, 180, 255, 0.88);
+        }
+        .dot-a { top: 18%; left: 25%; }
+        .dot-b { top: 28%; right: 18%; }
+        .dot-c { bottom: 22%; left: 18%; }
+        .dot-d { bottom: 18%; right: 28%; }
+        .spline-console {
+          bottom: 18px;
+          min-height: 48px;
+          padding: 10px 12px;
+          border-radius: 6px;
+        }
+        .spline-console-item {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+          color: rgba(230, 238, 255, 0.76);
+          font-size: 11px;
+          font-weight: 700;
+        }
+        .spline-console-item span {
+          width: 7px;
+          height: 7px;
+          flex: 0 0 auto;
+          border-radius: 999px;
+          background: #2d8cff;
+          box-shadow: 0 0 12px rgba(45, 140, 255, 0.72);
+        }
+        @keyframes float-core {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-12px) scale(1.03); }
+        }
+        @keyframes orbit-glow {
+          0%, 100% { opacity: 0.32; filter: drop-shadow(0 0 3px rgba(77, 180, 255, 0.2)); }
+          50% { opacity: 0.72; filter: drop-shadow(0 0 12px rgba(77, 180, 255, 0.42)); }
+        }
+        @media (max-width: 980px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+            padding: 30px;
+            min-height: auto;
+          }
+          .hero-card { min-height: auto; }
+          .spline-shell { min-height: 500px; }
+          .hero-signal-rail { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+          .hero-grid { padding: 22px; }
+          .hero-logo { margin-bottom: 28px; }
+          .hero-headline { font-size: clamp(36px, 13vw, 54px); }
+          .hero-description { font-size: 14px; }
+          .spline-shell { min-height: 430px; }
+          .spline-console { align-items: flex-start; flex-direction: column; }
+          .spline-stage spline-viewer { inset: 58px -80px 70px -80px; width: calc(100% + 160px); height: calc(100% - 128px); }
+        }
       `}</style>
 
       <TopNav mode={mode} status={status} lang={lang} setLang={setLang} />
