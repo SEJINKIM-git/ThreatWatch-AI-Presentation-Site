@@ -27,9 +27,9 @@ const THEME = {
   panelLow: "rgba(23, 27, 39, 0.86)",
   line: "rgba(186, 209, 255, 0.1)",
   lineStrong: "rgba(186, 209, 255, 0.22)",
-  text: "#dee2f3",
-  textSoft: "rgba(222, 226, 243, 0.76)",
-  textMuted: "rgba(196, 198, 208, 0.52)",
+  text: "#f3f6ff",
+  textSoft: "rgba(235, 241, 255, 0.88)",
+  textMuted: "rgba(211, 221, 245, 0.68)",
   accentBlue: "#bad1ff",
   accentBlueSoft: "rgba(186, 209, 255, 0.14)",
   accentGold: "#f1cb88",
@@ -335,12 +335,12 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
         <div
           style={{
             fontSize: "11px",
-            color: THEME.accentBlue,
+            color: "#cfe0ff",
             textTransform: "uppercase",
             letterSpacing: "0.28em",
-            fontWeight: 700,
+            fontWeight: 800,
             fontFamily: DISPLAY_FONT,
-            textShadow: `0 0 10px ${THEME.accentGlow}`,
+            textShadow: "0 0 18px rgba(105, 160, 255, 0.48), 0 1px 12px rgba(0,0,0,0.55)",
           }}
         >
           {eyebrow}
@@ -348,17 +348,18 @@ function NarrativeHeader({ eyebrow, title, description, action }) {
         <h2
           style={{
             margin: "8px 0 0",
-            color: THEME.text,
+            color: "#f7f9ff",
             fontSize: "clamp(32px, 4vw, 46px)",
             lineHeight: 1.4,
             fontWeight: 800,
             fontFamily: DISPLAY_FONT,
             letterSpacing: "-0.02em",
+            textShadow: "0 2px 24px rgba(0,0,0,0.55)",
           }}
         >
           {title}
         </h2>
-        <p style={{ margin: "12px 0 0", color: THEME.textSoft, fontSize: "15px", lineHeight: 1.8, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{description}</p>
+        <p style={{ margin: "12px 0 0", color: "rgba(237, 243, 255, 0.9)", fontSize: "15px", lineHeight: 1.85, fontWeight: 500, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{description}</p>
       </div>
       {action ? <div>{action}</div> : null}
     </div>
@@ -377,11 +378,11 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
     },
     process: {
       background: "linear-gradient(180deg, rgba(8, 22, 35, 0.36), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.76), rgba(6, 10, 20, 0.86)), linear-gradient(rgba(133,197,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.04) 1px, transparent 1px), url("${DATA_CENTER_IMAGE}") center / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(5, 9, 18, 0.84), rgba(5, 9, 18, 0.92)), linear-gradient(90deg, rgba(5, 9, 18, 0.94), rgba(5, 9, 18, 0.5) 48%, rgba(5, 9, 18, 0.92)), linear-gradient(rgba(133,197,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.035) 1px, transparent 1px), url("${DATA_CENTER_IMAGE}") center / cover no-repeat`,
     },
     simulator: {
       background: "linear-gradient(180deg, rgba(28, 18, 31, 0.34), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.76), rgba(6, 10, 20, 0.9)), url("${OPS_CENTER_IMAGE}") center / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(5, 9, 18, 0.86), rgba(5, 9, 18, 0.94)), linear-gradient(90deg, rgba(5, 9, 18, 0.94), rgba(5, 9, 18, 0.58) 52%, rgba(5, 9, 18, 0.95)), url("${OPS_CENTER_IMAGE}") center / cover no-repeat`,
     },
     audit: {
       background: "linear-gradient(180deg, rgba(8, 30, 27, 0.34), rgba(8, 13, 24, 0.1))",
@@ -389,7 +390,7 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
     },
     customers: {
       background: "linear-gradient(180deg, rgba(14, 22, 42, 0.38), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.68), rgba(5, 10, 20, 0.88)), url("${GLOBAL_NETWORK_IMAGE}") center / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(5, 9, 18, 0.78), rgba(5, 9, 18, 0.92)), linear-gradient(90deg, rgba(5, 9, 18, 0.9), rgba(5, 9, 18, 0.5) 48%, rgba(5, 9, 18, 0.95)), url("${GLOBAL_NETWORK_IMAGE}") center / cover no-repeat`,
     },
   }[id] || {};
 
@@ -408,6 +409,7 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
         overflow: "hidden",
         WebkitMaskImage: sectionSurface.image ? "linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%)" : undefined,
         maskImage: sectionSurface.image ? "linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%)" : undefined,
+        textShadow: sectionSurface.image ? "0 1px 18px rgba(0,0,0,0.42)" : undefined,
       }}
     >
       <div
@@ -429,9 +431,9 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
       style={{
         background: "transparent",
         border: "none",
-        borderLeft: `1px solid ${accent}`,
+        borderLeft: "none",
         borderRadius: 0,
-        padding: "4px 0 4px 22px",
+        padding: "4px 0",
         boxShadow: "none",
         backdropFilter: "none",
         minWidth: 0,
@@ -443,17 +445,17 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
         <div
           style={{
             fontSize: "11px",
-            color: THEME.textMuted,
+            color: "rgba(202, 221, 255, 0.9)",
             letterSpacing: "0.22em",
             textTransform: "uppercase",
-            fontWeight: 700,
+            fontWeight: 800,
             fontFamily: DISPLAY_FONT,
             lineHeight: 1.4,
           }}
         >
           {title}
         </div>
-        {subtitle ? <div style={{ marginTop: "8px", color: THEME.textSoft, fontSize: "13px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{subtitle}</div> : null}
+        {subtitle ? <div style={{ marginTop: "8px", color: "rgba(235, 241, 255, 0.86)", fontSize: "13px", lineHeight: 1.75, fontWeight: 500, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{subtitle}</div> : null}
       </div>
       {children}
     </div>
@@ -1053,7 +1055,7 @@ function ProcessSection({ activeNode, status, lang }) {
               {lane.steps.map((step) => {
                 const state = getProcessStepState(step.ids, activeNode, status);
                 const palette = {
-                  idle: { bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.08)", text: "rgba(255,255,255,0.82)" },
+                  idle: { bg: "rgba(255,255,255,0.035)", border: "rgba(255,255,255,0.1)", text: "rgba(248,250,255,0.94)" },
                   active: { bg: `${lane.accent}12`, border: `${lane.accent}88`, text: "#ffffff" },
                   done: { bg: "rgba(109,187,155,0.08)", border: "rgba(109,187,155,0.35)", text: "#ffffff" },
                   error: { bg: "rgba(255,23,68,0.08)", border: "rgba(255,23,68,0.35)", text: "#ffffff" },
@@ -1081,13 +1083,13 @@ function ProcessSection({ activeNode, status, lang }) {
                         background: state === "idle" ? "rgba(255,255,255,0.04)" : palette.border,
                       }}
                     />
-                    <div style={{ fontSize: "10px", color: state === "idle" ? lane.accent : "#ffffff", letterSpacing: "0.8px", textTransform: "uppercase", fontWeight: 700 }}>
+                    <div style={{ fontSize: "10px", color: state === "idle" ? "rgba(155, 190, 255, 0.98)" : "#ffffff", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 800, fontFamily: DISPLAY_FONT }}>
                       {state === "active" ? (lang === "ko" ? "진행 중" : "Active step") : state === "done" ? (lang === "ko" ? "완료" : "Completed") : state === "error" ? (lang === "ko" ? "확인 필요" : "Needs attention") : (lang === "ko" ? "프로세스 단계" : "Process step")}
                     </div>
-                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 700, fontFamily: DISPLAY_FONT, lineHeight: 1.4, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>
+                    <div style={{ marginTop: "10px", fontSize: "18px", color: palette.text, fontWeight: 800, fontFamily: DISPLAY_FONT, lineHeight: 1.42, letterSpacing: "0.02em", textTransform: "uppercase", textShadow: "0 1px 14px rgba(0,0,0,0.48)", ...WRAP_ANYWHERE }}>
                       {t(step.title, lang)}
                     </div>
-                    <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.68)", fontSize: "13px", lineHeight: 1.75, ...WRAP_ANYWHERE }}>{t(step.detail, lang)}</div>
+                    <div style={{ marginTop: "10px", color: "rgba(238, 244, 255, 0.88)", fontSize: "13px", lineHeight: 1.78, fontWeight: 500, ...WRAP_ANYWHERE }}>{t(step.detail, lang)}</div>
                   </div>
                 );
               })}
@@ -1109,8 +1111,8 @@ function ProcessSection({ activeNode, status, lang }) {
                 }}
               >
                 <div style={{ color: THEME.text, fontWeight: 700, fontSize: "13px", fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.node}</div>
-                <div style={{ marginTop: "6px", color: "rgba(255,255,255,0.7)", fontSize: "12px", lineHeight: 1.6, ...WRAP_ANYWHERE }}>{t(item.meaning, lang)}</div>
-                <div style={{ marginTop: "8px", color: "rgba(133, 197, 255, 0.85)", fontSize: "11px", ...WRAP_ANYWHERE }}>{t(item.stage, lang)}</div>
+                <div style={{ marginTop: "6px", color: "rgba(236, 242, 255, 0.86)", fontSize: "12px", lineHeight: 1.68, fontWeight: 500, ...WRAP_ANYWHERE }}>{t(item.meaning, lang)}</div>
+                <div style={{ marginTop: "8px", color: "rgba(170, 211, 255, 0.95)", fontSize: "11px", fontWeight: 600, ...WRAP_ANYWHERE }}>{t(item.stage, lang)}</div>
               </div>
             ))}
           </div>
@@ -1223,11 +1225,11 @@ function ScenarioCard({ scenario, active, disabled, onClick }) {
         >
           {scenario.tag}
         </span>
-        <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.28)" }}>weight {scenario.weight}</span>
+        <span style={{ fontSize: "10px", color: "rgba(218, 228, 255, 0.62)" }}>weight {scenario.weight}</span>
       </div>
       <div style={{ fontSize: "14px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{scenario.label}</div>
-      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.34)", marginTop: "5px", ...WRAP_ANYWHERE }}>{scenario.input?.incident_type}</div>
-      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.56)", marginTop: "10px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{scenario.description}</div>
+      <div style={{ fontSize: "11px", color: "rgba(218, 228, 255, 0.7)", marginTop: "5px", ...WRAP_ANYWHERE }}>{scenario.input?.incident_type}</div>
+      <div style={{ fontSize: "11px", color: "rgba(238, 244, 255, 0.84)", marginTop: "10px", lineHeight: 1.75, fontWeight: 500, ...WRAP_ANYWHERE }}>{scenario.description}</div>
     </button>
   );
 }
@@ -1258,7 +1260,7 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta, lang }) {
             </span>
             <span style={{ color: THEME.text, fontSize: "20px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{scenario.label}</span>
           </div>
-          <div style={{ color: "rgba(255,255,255,0.64)", fontSize: "12px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{scenario.description}</div>
+          <div style={{ color: "rgba(238, 244, 255, 0.88)", fontSize: "12px", lineHeight: 1.85, fontWeight: 500, ...WRAP_ANYWHERE }}>{scenario.description}</div>
         </div>
         <div
           style={{
@@ -1271,8 +1273,8 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta, lang }) {
             padding: "12px",
           }}
         >
-          <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px" }}>{lang === "ko" ? "실행 스냅샷" : "Run Snapshot"}</div>
-          <div style={{ marginTop: "8px", fontSize: "12px", color: "rgba(255,255,255,0.82)", lineHeight: 1.7, ...WRAP_ANYWHERE }}>
+          <div style={{ fontSize: "10px", color: "rgba(202, 221, 255, 0.82)", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 800, fontFamily: DISPLAY_FONT }}>{lang === "ko" ? "실행 스냅샷" : "Run Snapshot"}</div>
+          <div style={{ marginTop: "8px", fontSize: "12px", color: "rgba(240, 245, 255, 0.9)", lineHeight: 1.75, fontWeight: 600, ...WRAP_ANYWHERE }}>
             <div>{lang === "ko" ? "모드" : "Mode"}: {t(MODE_COPY[mode].label, lang)}</div>
             <div>{lang === "ko" ? "시드" : "Seed"}: {seed || (lang === "ko" ? "자동 생성" : "Auto generated")}</div>
             <div>{lang === "ko" ? "최근 소스" : "Last source"}: {lastRunMeta?.source || (lang === "ko" ? "아직 실행 안 됨" : "Not run yet")}</div>
@@ -1287,14 +1289,14 @@ function SelectedScenarioCard({ scenario, seed, mode, lastRunMeta, lang }) {
       </div>
 
       <div style={{ marginTop: "16px" }}>
-        <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.34)", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: "8px" }}>{lang === "ko" ? "신호 지표" : "Signal Indicators"}</div>
+        <div style={{ fontSize: "10px", color: "rgba(202, 221, 255, 0.82)", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: "8px", fontWeight: 800, fontFamily: DISPLAY_FONT }}>{lang === "ko" ? "신호 지표" : "Signal Indicators"}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {(scenario.input?.indicators || []).map((indicator) => (
             <span
               key={indicator}
               style={{
                 fontSize: "11px",
-                color: "rgba(255,255,255,0.74)",
+                color: "rgba(238, 244, 255, 0.88)",
                 background: "rgba(255,255,255,0.04)",
                 border: "1px solid rgba(255,255,255,0.07)",
                 borderRadius: "999px",
@@ -1943,7 +1945,7 @@ function CustomersSection({ lang }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "14px" }}>
         {CUSTOMER_SEGMENTS.map((segment) => (
           <SectionPanel key={segment.title} title={segment.title} accent="rgba(133, 197, 255, 0.16)">
-            <div style={{ color: "rgba(255,255,255,0.74)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{t(segment.text, lang)}</div>
+            <div style={{ color: "rgba(238, 244, 255, 0.88)", fontSize: "13px", lineHeight: 1.85, fontWeight: 500, ...WRAP_ANYWHERE }}>{t(segment.text, lang)}</div>
           </SectionPanel>
         ))}
       </div>
@@ -1970,7 +1972,7 @@ function CustomersSection({ lang }) {
                 >
                   {index + 1}
                 </div>
-                <div style={{ color: "rgba(255,255,255,0.78)", fontSize: "13px", lineHeight: 1.8, ...WRAP_ANYWHERE }}>{t(item, lang)}</div>
+                <div style={{ color: "rgba(238, 244, 255, 0.88)", fontSize: "13px", lineHeight: 1.85, fontWeight: 500, ...WRAP_ANYWHERE }}>{t(item, lang)}</div>
               </div>
             ))}
           </div>
@@ -1988,8 +1990,8 @@ function CustomersSection({ lang }) {
                   border: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
-                <div style={{ color: THEME.text, fontSize: "13px", fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.title}</div>
-                <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.68)", fontSize: "12px", lineHeight: 1.7, ...WRAP_ANYWHERE }}>{t(item.text, lang)}</div>
+                <div style={{ color: "#f5f8ff", fontSize: "13px", fontWeight: 800, fontFamily: DISPLAY_FONT, letterSpacing: "0.02em", textTransform: "uppercase", ...WRAP_ANYWHERE }}>{item.title}</div>
+                <div style={{ marginTop: "4px", color: "rgba(238, 244, 255, 0.86)", fontSize: "12px", lineHeight: 1.75, fontWeight: 500, ...WRAP_ANYWHERE }}>{t(item.text, lang)}</div>
               </div>
             ))}
           </div>
@@ -2702,11 +2704,11 @@ export default function ThreatWatchDashboard() {
               <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <StatusDot status={status} />
-                  <span style={{ color: "rgba(255,255,255,0.78)", fontSize: "12px" }}>
+                  <span style={{ color: "rgba(240,245,255,0.9)", fontSize: "12px", fontWeight: 500 }}>
                     {status === "running" ? `${lang === "ko" ? "실행 중" : "Running"} ${(elapsed / 1000).toFixed(1)}s` : status === "done" ? (lang === "ko" ? "최근 실행 완료" : "Last run completed") : (lang === "ko" ? "다음 시나리오 준비 완료" : "Ready for next scenario")}
                   </span>
                 </div>
-                <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "11px" }}>{t(MODE_COPY[mode].subtitle, lang)}</span>
+                <span style={{ color: "rgba(218,228,255,0.72)", fontSize: "11px", fontWeight: 500 }}>{t(MODE_COPY[mode].subtitle, lang)}</span>
               </div>
               <PipelineVisualizer activeNode={activeNode} status={status} />
               {result ? (
@@ -2719,9 +2721,10 @@ export default function ThreatWatchDashboard() {
                     padding: "20px",
                     background: "rgba(255,255,255,0.03)",
                     border: "1px dashed rgba(255,255,255,0.08)",
-                    color: "rgba(255,255,255,0.62)",
+                    color: "rgba(238,244,255,0.86)",
                     fontSize: "13px",
                     lineHeight: 1.8,
+                    fontWeight: 500,
                   }}
                 >
                   {lang === "ko" ? "아직 실행된 결과가 없습니다. `Run Case Mix` 또는 개별 incident template을 선택하면 이 영역이 P1/P2/P3 결과 카드로 채워집니다." : "There is no result yet. Run the case mix or select an incident template to fill this area with a P1/P2/P3 result card."}
