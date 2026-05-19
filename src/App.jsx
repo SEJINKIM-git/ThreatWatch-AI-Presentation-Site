@@ -50,9 +50,9 @@ const WRAP_ANYWHERE = {
 };
 const BRAND_LOGO = "/threatwatch-logo.svg";
 const HERO_IMAGE = "/security-design-hero.png";
-const OPS_ROOM_IMAGE = "/security-ops-room-bg.jpg";
-const GLOBAL_NETWORK_IMAGE = "/global-network-earth-bg.jpg";
-const INFRA_IMAGE = "/security-infra-bg.jpg";
+const DATA_CENTER_IMAGE = "/data-center-bg.jpeg";
+const GLOBAL_NETWORK_IMAGE = "/global-network-bg.jpg";
+const OPS_CENTER_IMAGE = "/security-ops-center-bg.webp";
 const SPLINE_SCENE = "https://prod.spline.design/dbYDAQsnGPSeHJv0/scene.splinecode";
 const LANGUAGE_OPTIONS = ["ko", "en"];
 
@@ -369,19 +369,19 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
   const sectionSurface = {
     problem: {
       background: "linear-gradient(180deg, rgba(23, 10, 18, 0.34), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(90deg, rgba(5, 9, 18, 0.84), rgba(5, 9, 18, 0.66)), url("${OPS_ROOM_IMAGE}") center / cover no-repeat`,
+      image: `linear-gradient(90deg, rgba(5, 9, 18, 0.88), rgba(5, 9, 18, 0.7)), url("${OPS_CENTER_IMAGE}") center / cover no-repeat`,
     },
     solution: {
       background: "linear-gradient(180deg, rgba(11, 22, 43, 0.42), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(90deg, rgba(5, 10, 21, 0.74), rgba(5, 10, 21, 0.54)), url("${GLOBAL_NETWORK_IMAGE}") center top / cover no-repeat`,
+      image: `linear-gradient(90deg, rgba(5, 10, 21, 0.82), rgba(5, 10, 21, 0.46)), url("${GLOBAL_NETWORK_IMAGE}") center / cover no-repeat`,
     },
     process: {
       background: "linear-gradient(180deg, rgba(8, 22, 35, 0.36), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.7), rgba(6, 10, 20, 0.82)), linear-gradient(rgba(133,197,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.045) 1px, transparent 1px), url("${INFRA_IMAGE}") center 12% / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.76), rgba(6, 10, 20, 0.86)), linear-gradient(rgba(133,197,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.04) 1px, transparent 1px), url("${DATA_CENTER_IMAGE}") center / cover no-repeat`,
     },
     simulator: {
       background: "linear-gradient(180deg, rgba(28, 18, 31, 0.34), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.72), rgba(6, 10, 20, 0.88)), url("${OPS_ROOM_IMAGE}") center 35% / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.76), rgba(6, 10, 20, 0.9)), url("${OPS_CENTER_IMAGE}") center / cover no-repeat`,
     },
     audit: {
       background: "linear-gradient(180deg, rgba(8, 30, 27, 0.34), rgba(8, 13, 24, 0.1))",
@@ -389,7 +389,7 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
     },
     customers: {
       background: "linear-gradient(180deg, rgba(14, 22, 42, 0.38), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.62), rgba(5, 10, 20, 0.86)), url("${GLOBAL_NETWORK_IMAGE}") center top / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.68), rgba(5, 10, 20, 0.88)), url("${GLOBAL_NETWORK_IMAGE}") center / cover no-repeat`,
     },
   }[id] || {};
 
@@ -403,33 +403,13 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
         position: "relative",
         borderRadius: "0",
         background: sectionSurface.image || sectionSurface.background || "transparent",
-        border: sectionSurface.background ? `1px solid ${THEME.line}` : "none",
-        boxShadow: sectionSurface.background ? "inset 0 1px 0 rgba(255,255,255,0.03), 0 28px 90px rgba(0,0,0,0.16)" : "none",
+        border: "none",
+        boxShadow: "none",
         overflow: "hidden",
+        WebkitMaskImage: sectionSurface.image ? "linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%)" : undefined,
+        maskImage: sectionSurface.image ? "linear-gradient(180deg, transparent 0%, #000 8%, #000 92%, transparent 100%)" : undefined,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          height: "1px",
-          background: `linear-gradient(90deg, transparent, ${tint}, transparent)`,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: "1px",
-          height: "88px",
-          background: `linear-gradient(180deg, ${tint}, rgba(0,0,0,0))`,
-          opacity: 0.18,
-          pointerEvents: "none",
-        }}
-      />
       <div
         style={{
           position: "relative",
@@ -2356,10 +2336,10 @@ export default function ThreatWatchDashboard() {
           position: relative;
           overflow: hidden;
           min-height: min(760px, calc(100vh - 88px));
-          border: 1px solid rgba(186, 209, 255, 0.22);
-          border-radius: 0 0 8px 8px;
+          border: 0;
+          border-radius: 0;
           background: #050914;
-          box-shadow: 0 0 0 1px rgba(186, 209, 255, 0.08), 0 34px 80px rgba(0, 0, 0, 0.38);
+          box-shadow: none;
           isolation: isolate;
         }
         .hero-card::before {
@@ -2646,7 +2626,6 @@ export default function ThreatWatchDashboard() {
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255, 255, 255"],
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255,255,255"] {
           border: none !important;
-          border-top: 1px solid rgba(186, 209, 255, 0.08) !important;
         }
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255, 145"],
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255,145"],
@@ -2657,7 +2636,6 @@ export default function ThreatWatchDashboard() {
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(133, 197"],
         section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(133"] {
           border: none !important;
-          border-top: 1px solid rgba(186, 209, 255, 0.08) !important;
         }
         section:not(#overview):not(#simulator) div[style*="padding: 16px"],
         section:not(#overview):not(#simulator) div[style*="padding: 14px"] {
