@@ -50,6 +50,9 @@ const WRAP_ANYWHERE = {
 };
 const BRAND_LOGO = "/threatwatch-logo.svg";
 const HERO_IMAGE = "/security-design-hero.png";
+const OPS_ROOM_IMAGE = "/security-ops-room-bg.jpg";
+const GLOBAL_NETWORK_IMAGE = "/global-network-earth-bg.jpg";
+const INFRA_IMAGE = "/security-infra-bg.jpg";
 const SPLINE_SCENE = "https://prod.spline.design/dbYDAQsnGPSeHJv0/scene.splinecode";
 const LANGUAGE_OPTIONS = ["ko", "en"];
 
@@ -366,20 +369,19 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
   const sectionSurface = {
     problem: {
       background: "linear-gradient(180deg, rgba(23, 10, 18, 0.34), rgba(8, 13, 24, 0.1))",
-      image: "radial-gradient(circle at 12% 20%, rgba(226,127,119,0.14), transparent 30%)",
+      image: `linear-gradient(90deg, rgba(5, 9, 18, 0.84), rgba(5, 9, 18, 0.66)), url("${OPS_ROOM_IMAGE}") center / cover no-repeat`,
     },
     solution: {
       background: "linear-gradient(180deg, rgba(11, 22, 43, 0.42), rgba(8, 13, 24, 0.1))",
-      image: "radial-gradient(circle at 86% 18%, rgba(98,154,255,0.17), transparent 34%)",
+      image: `linear-gradient(90deg, rgba(5, 10, 21, 0.74), rgba(5, 10, 21, 0.54)), url("${GLOBAL_NETWORK_IMAGE}") center top / cover no-repeat`,
     },
     process: {
       background: "linear-gradient(180deg, rgba(8, 22, 35, 0.36), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(rgba(133,197,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.045) 1px, transparent 1px)`,
-      backgroundSize: "56px 56px",
+      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.7), rgba(6, 10, 20, 0.82)), linear-gradient(rgba(133,197,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(133,197,255,0.045) 1px, transparent 1px), url("${INFRA_IMAGE}") center 12% / cover no-repeat`,
     },
     simulator: {
       background: "linear-gradient(180deg, rgba(28, 18, 31, 0.34), rgba(8, 13, 24, 0.1))",
-      image: "radial-gradient(circle at 18% 24%, rgba(198,143,152,0.12), transparent 34%)",
+      image: `linear-gradient(180deg, rgba(6, 10, 20, 0.72), rgba(6, 10, 20, 0.88)), url("${OPS_ROOM_IMAGE}") center 35% / cover no-repeat`,
     },
     audit: {
       background: "linear-gradient(180deg, rgba(8, 30, 27, 0.34), rgba(8, 13, 24, 0.1))",
@@ -387,7 +389,7 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
     },
     customers: {
       background: "linear-gradient(180deg, rgba(14, 22, 42, 0.38), rgba(8, 13, 24, 0.1))",
-      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.66), rgba(5, 10, 20, 0.88)), url("${HERO_IMAGE}") center / cover no-repeat`,
+      image: `linear-gradient(180deg, rgba(5, 10, 20, 0.62), rgba(5, 10, 20, 0.86)), url("${GLOBAL_NETWORK_IMAGE}") center top / cover no-repeat`,
     },
   }[id] || {};
 
@@ -396,15 +398,13 @@ function PageSection({ id, tint = THEME.lineStrong, children }) {
       id={id}
       style={{
         marginTop: "112px",
-        padding: "34px 26px 42px",
+        padding: "clamp(44px, 4vw, 72px) clamp(34px, 5vw, 92px) clamp(56px, 5vw, 86px)",
         scrollMarginTop: "120px",
         position: "relative",
-        borderRadius: "8px",
-        background: sectionSurface.background || "transparent",
-        backgroundImage: sectionSurface.image,
-        backgroundSize: sectionSurface.backgroundSize,
+        borderRadius: "0",
+        background: sectionSurface.image || sectionSurface.background || "transparent",
         border: sectionSurface.background ? `1px solid ${THEME.line}` : "none",
-        boxShadow: sectionSurface.background ? "inset 0 1px 0 rgba(255,255,255,0.03)" : "none",
+        boxShadow: sectionSurface.background ? "inset 0 1px 0 rgba(255,255,255,0.03), 0 28px 90px rgba(0,0,0,0.16)" : "none",
         overflow: "hidden",
       }}
     >
@@ -679,7 +679,7 @@ function TopNav({ mode, status, lang, setLang }) {
         boxShadow: "0 20px 40px rgba(9,14,25,0.35)",
       }}
     >
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "18px", flexWrap: "wrap" }}>
+      <div style={{ width: "min(100%, 1720px)", margin: "0 auto", padding: "14px clamp(24px, 4vw, 72px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "18px", flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img
             src={BRAND_LOGO}
@@ -697,8 +697,8 @@ function TopNav({ mode, status, lang, setLang }) {
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div className="top-nav-actions" style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+          <div className="top-nav-links" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
             {NAV_ITEMS.map((item) => (
               <a
                 key={item.id}
@@ -2355,7 +2355,7 @@ export default function ThreatWatchDashboard() {
         .hero-card {
           position: relative;
           overflow: hidden;
-          min-height: min(680px, calc(100vh - 88px));
+          min-height: min(760px, calc(100vh - 88px));
           border: 1px solid rgba(186, 209, 255, 0.22);
           border-radius: 0 0 8px 8px;
           background: #050914;
@@ -2401,11 +2401,11 @@ export default function ThreatWatchDashboard() {
           position: relative;
           z-index: 3;
           display: grid;
-          grid-template-columns: minmax(0, 0.9fr) minmax(390px, 0.72fr);
-          min-height: min(680px, calc(100vh - 88px));
+          grid-template-columns: minmax(0, 0.92fr) minmax(430px, 0.82fr);
+          min-height: min(760px, calc(100vh - 88px));
           gap: 0;
           align-items: center;
-          padding: clamp(30px, 4.5vw, 64px);
+          padding: clamp(38px, 5vw, 92px);
         }
         .hero-copy { position: relative; z-index: 4; max-width: 660px; min-width: 0; }
         .hero-logo {
@@ -2675,6 +2675,19 @@ export default function ThreatWatchDashboard() {
           .hero-signal-rail { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
+          .top-nav-actions {
+            width: 100%;
+            max-width: 100%;
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+          }
+          .top-nav-actions::-webkit-scrollbar { display: none; }
+          .top-nav-links {
+            flex-wrap: nowrap !important;
+            flex: 0 0 auto;
+          }
           .hero-grid { padding: 22px; }
           .hero-logo { margin-bottom: 28px; }
           .hero-headline { font-size: clamp(28px, 7.7vw, 30px); line-height: 1.4; }
@@ -2687,7 +2700,7 @@ export default function ThreatWatchDashboard() {
 
       <TopNav mode={mode} status={status} lang={lang} setLang={setLang} />
 
-      <main style={{ position: "relative", zIndex: 1, maxWidth: "1280px", margin: "0 auto", padding: "0 24px 60px" }}>
+      <main style={{ position: "relative", zIndex: 1, width: "min(100%, 1720px)", margin: "0 auto", padding: "0 clamp(24px, 4vw, 72px) 72px" }}>
         <HeroSection mode={mode} status={status} lastRunMeta={lastRunMeta} lang={lang} />
         <ProblemSection lang={lang} />
         <SolutionSection lang={lang} />
