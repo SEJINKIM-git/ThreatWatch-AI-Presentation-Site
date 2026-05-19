@@ -327,6 +327,43 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeRecipientEmail(value));
 }
 
+async function parseJsonOrAccepted(response, alertData, recipientEmail) {
+  const text = await response.text();
+  if (!text.trim()) {
+    return {
+      source: "live",
+      delivery: {
+        requested: Boolean(recipientEmail),
+        channel: recipientEmail ? "email" : "workspace",
+        recipient: recipientEmail || "",
+        status: recipientEmail ? "sent" : "not_requested",
+        message: recipientEmail
+          ? `Webhook accepted by n8n (HTTP ${response.status}). Check the n8n mail node execution for final inbox delivery.`
+          : `Webhook accepted by n8n (HTTP ${response.status}).`,
+      },
+      final_payload: alertData,
+    };
+  }
+
+  return JSON.parse(text);
+}
+
+async function postConnectedWorkflow(webhookUrl, alertData, recipientEmail) {
+  const proxyResponse = await fetch("/api/n8n-webhook", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ webhookUrl, payload: alertData }),
+  });
+
+  const data = await parseJsonOrAccepted(proxyResponse, alertData, recipientEmail);
+
+  if (!proxyResponse.ok) {
+    throw new Error(data?.error || data?.message || `HTTP ${proxyResponse.status}: ${proxyResponse.statusText}`);
+  }
+
+  return data;
+}
+
 function NarrativeHeader({ eyebrow, title, description, action }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", gap: "20px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "18px" }}>
@@ -2154,17 +2191,7 @@ export default function ThreatWatchDashboard() {
         }
 
         try {
-          const response = await fetch(webhookUrl.trim(), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(alertData),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          const data = await response.json();
+          const data = await postConnectedWorkflow(webhookUrl.trim(), alertData, normalizedRecipient);
           await runPipelineSequence(setActiveNode, ["parse", "confidence", "normalize", "decision", "action"], 300);
           nextResult = normalizeLiveResult(data, scenario, alertData, {
             mode: "live",
