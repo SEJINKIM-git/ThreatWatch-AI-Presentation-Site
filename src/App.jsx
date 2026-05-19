@@ -447,18 +447,19 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
   return (
     <div
       style={{
-        background: `linear-gradient(180deg, ${THEME.panel}, ${THEME.panelLow})`,
-        border: `1px solid ${accent}`,
-        borderRadius: "24px",
-        padding: "20px",
-        boxShadow: `0 0 0 1px ${THEME.line}, inset 0 0 20px rgba(186, 209, 255, 0.04), 0 24px 54px rgba(9,14,25,0.24)`,
-        backdropFilter: "blur(20px)",
+        background: "transparent",
+        border: "none",
+        borderLeft: `1px solid ${accent}`,
+        borderRadius: 0,
+        padding: "4px 0 4px 22px",
+        boxShadow: "none",
+        backdropFilter: "none",
         minWidth: 0,
         maxWidth: "100%",
-        overflow: "hidden",
+        overflow: "visible",
       }}
     >
-      <div style={{ marginBottom: "16px" }}>
+      <div style={{ marginBottom: "18px" }}>
         <div
           style={{
             fontSize: "11px",
@@ -467,11 +468,12 @@ function SectionPanel({ title, subtitle, children, accent = "rgba(255,255,255,0.
             textTransform: "uppercase",
             fontWeight: 700,
             fontFamily: DISPLAY_FONT,
+            lineHeight: 1.4,
           }}
         >
           {title}
         </div>
-        {subtitle ? <div style={{ marginTop: "6px", color: THEME.textSoft, fontSize: "12px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{subtitle}</div> : null}
+        {subtitle ? <div style={{ marginTop: "8px", color: THEME.textSoft, fontSize: "13px", lineHeight: 1.7, fontFamily: BODY_FONT, ...WRAP_ANYWHERE }}>{subtitle}</div> : null}
       </div>
       {children}
     </div>
@@ -546,12 +548,12 @@ function HeroProductPreview({ mode, status, lastRunMeta, lang }) {
   return (
     <div
       style={{
-        borderRadius: "28px",
-        padding: "24px",
-        background: `linear-gradient(180deg, ${THEME.panelStrong}, ${THEME.panelLow})`,
-        border: `1px solid ${THEME.lineStrong}`,
-        boxShadow: `inset 0 0 20px rgba(186,209,255,0.05), 0 20px 42px rgba(9,14,25,0.28)`,
-        backdropFilter: "blur(18px)",
+        borderRadius: 0,
+        padding: "6px 0 0",
+        background: "transparent",
+        border: "none",
+        boxShadow: "none",
+        backdropFilter: "none",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
@@ -567,10 +569,12 @@ function HeroProductPreview({ mode, status, lastRunMeta, lang }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px", marginTop: "18px" }}>
         <div
           style={{
-            borderRadius: "18px",
+            borderRadius: 0,
             padding: "16px",
-            background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015))",
+            background: "transparent",
             border: `1px solid ${THEME.line}`,
+            borderLeft: "none",
+            borderRight: "none",
           }}
         >
           <div style={{ color: THEME.textMuted, fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", fontFamily: DISPLAY_FONT }}>{lang === "ko" ? "제어 신호" : "Control signals"}</div>
@@ -581,8 +585,10 @@ function HeroProductPreview({ mode, status, lastRunMeta, lang }) {
                 style={{
                   borderRadius: "14px",
                   padding: "12px 14px",
-                  background: "rgba(255,255,255,0.04)",
+                  background: "transparent",
                   border: `1px solid ${THEME.line}`,
+                  borderLeft: "none",
+                  borderRight: "none",
                   color: THEME.textSoft,
                   fontSize: "13px",
                   fontFamily: BODY_FONT,
@@ -871,11 +877,12 @@ function HeroSection({ mode, status, lastRunMeta, lang }) {
 
         <div
           style={{
-            borderRadius: "30px",
-            border: `1px solid rgba(154,182,234,0.22)`,
-            background: "linear-gradient(180deg, rgba(14,19,31,0.96), rgba(23,27,39,0.88))",
-            padding: "24px",
-            boxShadow: `0 0 0 1px ${THEME.line}, 0 20px 48px rgba(9,14,25,0.24)`,
+            borderRadius: 0,
+            borderTop: `1px solid rgba(154,182,234,0.18)`,
+            borderBottom: `1px solid rgba(154,182,234,0.18)`,
+            background: "linear-gradient(90deg, rgba(14,19,31,0.42), rgba(23,27,39,0.12), rgba(14,19,31,0.34))",
+            padding: "28px 0",
+            boxShadow: "none",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", alignItems: "flex-end", flexWrap: "wrap", marginBottom: "16px" }}>
@@ -926,10 +933,11 @@ function ProblemSection({ lang }) {
               <div
                 key={t(item, lang)}
                 style={{
-                  borderRadius: "14px",
+                  borderRadius: 0,
                   padding: "12px 14px",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,145,0,0.14)",
+                  background: "transparent",
+                  border: "none",
+                  borderTop: "1px solid rgba(186,209,255,0.08)",
                   color: "rgba(255,255,255,0.82)",
                   fontSize: "13px",
                   ...WRAP_ANYWHERE,
@@ -2624,6 +2632,37 @@ export default function ThreatWatchDashboard() {
         @keyframes orbit-glow {
           0%, 100% { opacity: 0.32; filter: drop-shadow(0 0 3px rgba(77, 180, 255, 0.2)); }
           50% { opacity: 0.72; filter: drop-shadow(0 0 12px rgba(77, 180, 255, 0.42)); }
+        }
+        section:not(#overview):not(#simulator) div[style*="border-radius: 12px"],
+        section:not(#overview):not(#simulator) div[style*="border-radius: 14px"],
+        section:not(#overview):not(#simulator) div[style*="border-radius: 16px"],
+        section:not(#overview):not(#simulator) div[style*="border-radius: 18px"],
+        section:not(#overview):not(#simulator) div[style*="border-radius: 20px"],
+        section:not(#overview):not(#simulator) div[style*="border-radius: 24px"] {
+          border-radius: 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+        }
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255, 255, 255"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255,255,255"] {
+          border: none !important;
+          border-top: 1px solid rgba(186, 209, 255, 0.08) !important;
+        }
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255, 145"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(255,145"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(109, 187"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(109"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(142, 167"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(142"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(133, 197"],
+        section:not(#overview):not(#simulator) div[style*="border: 1px solid rgba(133"] {
+          border: none !important;
+          border-top: 1px solid rgba(186, 209, 255, 0.08) !important;
+        }
+        section:not(#overview):not(#simulator) div[style*="padding: 16px"],
+        section:not(#overview):not(#simulator) div[style*="padding: 14px"] {
+          padding-left: 0 !important;
+          padding-right: 0 !important;
         }
         @media (max-width: 980px) {
           .hero-grid {
