@@ -1360,6 +1360,8 @@ function ResultCard({ result, lang }) {
   const deliveryTone =
     delivery.status === "sent"
       ? { bg: "rgba(109,187,155,0.12)", border: "rgba(109,187,155,0.36)", text: "#bce7d7" }
+      : delivery.status === "queued" || delivery.status === "submitted"
+        ? { bg: "rgba(142,167,255,0.12)", border: "rgba(142,167,255,0.34)", text: "#bad1ff" }
       : delivery.status === "not_sent"
         ? { bg: "rgba(255,23,68,0.08)", border: "rgba(255,23,68,0.28)", text: "#ff8fa3" }
         : { bg: "rgba(255,255,255,0.05)", border: "rgba(255,255,255,0.08)", text: "rgba(255,255,255,0.72)" };
@@ -1441,9 +1443,15 @@ function ResultCard({ result, lang }) {
                 border: `1px solid ${deliveryTone.border}`,
                 maxWidth: "100%",
                 ...WRAP_ANYWHERE,
-              }}
-            >
-              {delivery.status === "sent" ? (lang === "ko" ? "이메일 발송 완료" : "Email delivered") : delivery.status === "not_sent" ? (lang === "ko" ? "이메일 발송 실패" : "Email not sent") : (lang === "ko" ? "이메일 미리보기" : "Email preview")}
+            }}
+          >
+              {delivery.status === "sent"
+                ? (lang === "ko" ? "이메일 발송 완료" : "Email delivered")
+                : delivery.status === "queued"
+                  ? (lang === "ko" ? "이메일 요청 접수" : "Email request queued")
+                  : delivery.status === "not_sent"
+                    ? (lang === "ko" ? "이메일 발송 실패" : "Email not sent")
+                    : (lang === "ko" ? "이메일 미리보기" : "Email preview")}
             </span>
           ) : null}
         </div>

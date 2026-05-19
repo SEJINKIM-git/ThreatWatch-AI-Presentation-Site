@@ -30,6 +30,29 @@ function buildAcceptedResult(payload, upstreamStatus) {
   };
 }
 
+function buildSubmittedResult(payload, detail) {
+  const recipient = normalizeRecipient(payload);
+  const requested = Boolean(recipient || payload?.delivery_requested);
+
+  return {
+    ...buildAcceptedResult(payload, null),
+    delivery: {
+      requested,
+      channel: requested ? "email" : "workspace",
+      recipient,
+      status: requested ? "queued" : "submitted",
+      message: requested
+        ? `Webhook payload was submitted to n8n, but n8n did not return a timely final response${detail ? ` (${detail})` : ""}. Check the n8n execution log and mail node for final delivery.`
+        : `Webhook payload was submitted to n8n, but n8n did not return a timely final response${detail ? ` (${detail})` : ""}.`,
+    },
+    ai_result: {
+      ...buildAcceptedResult(payload, null).ai_result,
+      rationale: ["The webhook request was submitted, but the upstream workflow did not return before the response window closed."],
+      recommended_actions: ["Check the n8n execution log to confirm whether downstream email delivery completed."],
+    },
+  };
+}
+
 async function readUpstreamResponse(response, payload) {
   const text = await response.text();
   if (!text.trim()) {
@@ -74,13 +97,19 @@ export default async function handler(req, res) {
   }
 
   try {
+    const timeout = AbortSignal.timeout(8000);
     const response = await fetch(target.toString(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload || {}),
+      signal: timeout,
     });
 
     const data = await readUpstreamResponse(response, payload || {});
+
+    if ([502, 504, 524].includes(response.status)) {
+      return res.status(202).json(buildSubmittedResult(payload || {}, `upstream HTTP ${response.status}`));
+    }
 
     if (!response.ok) {
       return res.status(response.status).json({
@@ -91,6 +120,10 @@ export default async function handler(req, res) {
 
     return res.status(200).json(data);
   } catch (error) {
+    if (error?.name === "TimeoutError" || error?.name === "AbortError") {
+      return res.status(202).json(buildSubmittedResult(payload || {}, "response timeout"));
+    }
+
     return res.status(502).json({
       error: "Failed to reach n8n webhook",
       message: error instanceof Error ? error.message : String(error),
