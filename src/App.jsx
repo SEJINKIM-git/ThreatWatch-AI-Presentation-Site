@@ -327,6 +327,13 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeRecipientEmail(value));
 }
 
+function shouldRequestEmailForScenario(scenario) {
+  if (!scenario) return false;
+  const level = scenario.expected_output?.risk_level || scenario.risk_level || "";
+  const precheckDecision = scenario.precheck?.decision || "";
+  return level === "P1" || level === "P2" || precheckDecision === "ESCALATE";
+}
+
 async function parseJsonOrAccepted(response, alertData, recipientEmail) {
   const text = await response.text();
   if (!text.trim()) {
@@ -1753,6 +1760,7 @@ function InboxDeliveryPanel({
   recipientEmail,
   setRecipientEmail,
   selectedScenario,
+  emailEligible,
   handleSendEmail,
   isBusy,
   result,
@@ -1765,6 +1773,8 @@ function InboxDeliveryPanel({
   let helperText = lang === "ko" ? "수신자 이메일을 입력하면, 현재 선택한 incident를 해당 사용자의 실제 메일함으로 보낼 수 있습니다." : "Enter any recipient email address to send the selected incident as a live alert message.";
   if (!selectedScenario) {
     helperText = lang === "ko" ? "먼저 incident template을 하나 선택해 주세요." : "Select an incident template first.";
+  } else if (!emailEligible) {
+    helperText = lang === "ko" ? "자동 메일은 P1/P2 사건 또는 데이터 부족으로 ESCALATE된 케이스에서만 발송됩니다." : "Automatic email delivery is limited to P1/P2 incidents or cases escalated for missing data.";
   } else if (!emailReady) {
     helperText = lang === "ko" ? "선택한 사용자에게 메일을 보내려면 유효한 이메일 주소를 입력해 주세요." : "Enter a valid recipient email address to send a live message.";
   } else if (!webhookReady) {
@@ -1805,7 +1815,7 @@ function InboxDeliveryPanel({
       <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap" }}>
         <button
           onClick={handleSendEmail}
-          disabled={isBusy || !selectedScenario || !emailReady || !webhookReady}
+          disabled={isBusy || !selectedScenario || !emailEligible || !emailReady || !webhookReady}
           style={{
             borderRadius: "999px",
             border: "1px solid rgba(109,187,155,0.34)",
@@ -1814,8 +1824,8 @@ function InboxDeliveryPanel({
             padding: "10px 14px",
             fontSize: "12px",
             fontWeight: 700,
-            cursor: isBusy || !selectedScenario || !emailReady || !webhookReady ? "not-allowed" : "pointer",
-            opacity: isBusy || !selectedScenario || !emailReady || !webhookReady ? 0.56 : 1,
+            cursor: isBusy || !selectedScenario || !emailEligible || !emailReady || !webhookReady ? "not-allowed" : "pointer",
+            opacity: isBusy || !selectedScenario || !emailEligible || !emailReady || !webhookReady ? 0.56 : 1,
           }}
         >
           {lang === "ko" ? "지정한 메일로 보내기" : "Send to Recipient Inbox"}
@@ -2308,8 +2318,7 @@ export default function ThreatWatchDashboard() {
     if (mode !== "live") return {};
     const normalizedRecipient = normalizeRecipientEmail(recipientEmail);
     if (!isValidEmail(normalizedRecipient)) return {};
-    const level = scenario?.expected_output?.risk_level || scenario?.risk_level || "";
-    if (level === "P1" || level === "P2") return { recipientEmail: normalizedRecipient };
+    if (shouldRequestEmailForScenario(scenario)) return { recipientEmail: normalizedRecipient };
     return {};
   };
 
@@ -2351,6 +2360,11 @@ export default function ThreatWatchDashboard() {
 
     if (!webhookUrl.trim()) {
       setError(lang === "ko" ? "지정한 수신자에게 실제 이메일을 보내려면 n8n Webhook URL을 먼저 입력해야 합니다." : "Enter the n8n webhook URL before sending a live email to the specified recipient.");
+      return;
+    }
+
+    if (!shouldRequestEmailForScenario(selectedScenario)) {
+      setError(lang === "ko" ? "메일 발송은 P1/P2 사건 또는 데이터 부족으로 ESCALATE된 케이스에서만 가능합니다." : "Email delivery is only available for P1/P2 incidents or cases escalated for missing data.");
       return;
     }
 
@@ -2795,6 +2809,7 @@ export default function ThreatWatchDashboard() {
               recipientEmail={recipientEmail}
               setRecipientEmail={setRecipientEmail}
               selectedScenario={selectedScenario}
+              emailEligible={shouldRequestEmailForScenario(selectedScenario)}
               handleSendEmail={handleSendEmail}
               isBusy={isBusy || !scenarios.length}
               result={result}
