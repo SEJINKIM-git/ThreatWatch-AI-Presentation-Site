@@ -1359,7 +1359,11 @@ function ResultCard({ result, lang }) {
   const aiResult = result.ai_result || {};
   const precheck = result.precheck_result || {};
   const delivery = result.delivery || {};
-  const riskMeta = RISK_META[payload.risk_level] || RISK_META.P2;
+  const tagColor = result.scenario_tag_color;
+  const riskMeta = tagColor
+    ? { bg: `${tagColor}14`, border: tagColor, text: tagColor, glow: `${tagColor}30` }
+    : (RISK_META[payload.risk_level] || RISK_META.P2);
+  const riskLabel = result.scenario_tag || payload.risk_level || "P2";
   const sourceLabel = result.source === "demo_fallback" ? (lang === "ko" ? "폴백 케이스 출력" : "Fallback Case Output") : result.source === "live" ? (lang === "ko" ? "연결된 워크플로우 출력" : "Connected Workflow Output") : (lang === "ko" ? "시나리오 모드 출력" : "Scenario Mode Output");
   const deliveryTone =
     delivery.status === "sent"
@@ -1390,12 +1394,14 @@ function ResultCard({ result, lang }) {
               background: riskMeta.bg,
               color: riskMeta.text,
               padding: "10px 18px",
-              fontSize: "22px",
+              fontSize: tagColor ? "14px" : "22px",
               fontWeight: 800,
               fontFamily: DISPLAY_FONT,
+              letterSpacing: tagColor ? "0.06em" : undefined,
+              textTransform: "uppercase",
             }}
           >
-            {payload.risk_level}
+            {riskLabel}
           </div>
           <div>
             <div style={{ fontSize: "18px", color: THEME.text, fontWeight: 700, fontFamily: DISPLAY_FONT, letterSpacing: "0.04em", textTransform: "uppercase" }}>{lang === "ko" ? "케이스 판단 결과" : "Case Decision Output"}</div>
@@ -2298,15 +2304,24 @@ export default function ThreatWatchDashboard() {
     return () => window.clearTimeout(timeoutId);
   }, [autoDemo, mode, scenarios, status]);
 
+  const liveEmailRuntime = (scenario) => {
+    if (mode !== "live") return {};
+    const normalizedRecipient = normalizeRecipientEmail(recipientEmail);
+    if (!isValidEmail(normalizedRecipient)) return {};
+    const level = scenario?.expected_output?.risk_level || scenario?.risk_level || "";
+    if (level === "P1" || level === "P2") return { recipientEmail: normalizedRecipient };
+    return {};
+  };
+
   const handleRandomRun = () => {
     const nextSeed = resolveRunSeed(mode === "demo" ? "demo" : "live");
     const nextScenario = pickWeightedScenario(scenarios, nextSeed);
-    runScenario(nextScenario, nextSeed);
+    runScenario(nextScenario, nextSeed, liveEmailRuntime(nextScenario));
   };
 
   const handleScenarioRun = (scenario) => {
     const nextSeed = resolveRunSeed(scenario.id);
-    runScenario(scenario, nextSeed);
+    runScenario(scenario, nextSeed, liveEmailRuntime(scenario));
   };
 
   const handleReplay = (item = lastRunMeta) => {
