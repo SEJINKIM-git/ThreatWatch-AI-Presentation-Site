@@ -144,7 +144,7 @@ export function buildDemoResult(scenario, alertData, options = {}) {
       status: options.recipientEmail ? (options.source === "demo_fallback" ? "not_sent" : "preview_only") : "not_requested",
       message: options.recipientEmail
         ? options.source === "demo_fallback"
-          ? "Connected workflow failed, so no live email was sent."
+          ? `Connected workflow failed, so no live email was sent.${options.fallbackReason ? ` Reason: ${options.fallbackReason}` : ""}`
           : "Scenario Mode preview completed. Switch to Connected Workflow to send a real alert email."
         : "Workspace preview completed.",
     },

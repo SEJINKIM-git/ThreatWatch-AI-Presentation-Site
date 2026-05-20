@@ -345,7 +345,11 @@ async function parseJsonOrAccepted(response, alertData, recipientEmail) {
     };
   }
 
-  return JSON.parse(text);
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`n8n returned an unexpected non-JSON response (HTTP ${response.status}): ${text.slice(0, 200)}`);
+  }
 }
 
 async function postConnectedWorkflow(webhookUrl, alertData, recipientEmail) {
@@ -2219,6 +2223,7 @@ export default function ThreatWatchDashboard() {
             seed,
             source: "demo_fallback",
             recipientEmail: normalizedRecipient,
+            fallbackReason: liveError.message,
           });
         }
       } else {
