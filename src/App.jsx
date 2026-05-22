@@ -2097,7 +2097,7 @@ export default function ThreatWatchDashboard() {
       try {
         const response = await fetch("/demo-scenarios.json");
         if (!response.ok) {
-          throw new Error(lang === "ko" ? `시나리오 파일 로드 실패: HTTP ${response.status}` : `Failed to load scenarios: HTTP ${response.status}`);
+          throw new Error(`Failed to load scenarios (HTTP ${response.status})`);
         }
 
         const payload = await response.json();
@@ -2122,7 +2122,7 @@ export default function ThreatWatchDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [lang]);
+  }, []);
 
   useEffect(() => {
     writeStoredValue(STORAGE_KEYS.language, lang);
